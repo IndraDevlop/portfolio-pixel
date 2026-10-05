@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { DoorOpen, Moon, Sun, Volume2, VolumeX } from 'lucide-react'
+import { DoorOpen, LogOut, Moon, Sun, Volume2, VolumeX } from 'lucide-react'
 import { SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 
 const iconBtn =
@@ -48,12 +48,14 @@ export function SystemControls({
 export function TopBar({
   section,
   visited,
-  onExit,
+  isRoomTour,
+  onDoorClick,
   controls,
 }: {
   section: Section
   visited: Set<Section>
-  onExit: () => void
+  isRoomTour: boolean
+  onDoorClick: () => void
   controls: React.ReactNode
 }) {
   const tour = SECTIONS.filter((s) => s !== 'home')
@@ -67,18 +69,25 @@ export function TopBar({
     >
       <button
         type="button"
-        onClick={onExit}
+        onClick={onDoorClick}
         className="flex items-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-gold"
-        aria-label="Back to main menu"
+        aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
       >
         <span className={iconBtn}>
-          <DoorOpen className="size-[18px]" aria-hidden="true" />
+          {isRoomTour ? (
+            <LogOut className="size-[18px] text-pink" aria-hidden="true" />
+          ) : (
+            <DoorOpen className="size-[18px]" aria-hidden="true" />
+          )}
         </span>
         <span className="hidden rounded-xl bg-panel/70 px-3 py-1.5 font-pixel text-lg font-semibold text-gold text-glow-gold backdrop-blur-sm sm:inline">{"Indra's Room"}</span>
       </button>
 
+      {/* Sembunyikan progress bar di mobile jika sedang dalam mode room tour agar makin bersih */}
       <div
-        className="flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-3 py-2 backdrop-blur-sm"
+        className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-3 py-2 backdrop-blur-sm ${
+          isRoomTour ? 'max-md:hidden' : ''
+        }`}
         aria-label={`Tour progress: ${visited.size} of ${tour.length} rooms explored`}
       >
         <span className="min-w-16 font-pixel text-xs uppercase tracking-widest text-cream">

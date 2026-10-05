@@ -19,6 +19,10 @@ export function PortfolioApp() {
   const [muted, setMuted] = useState(false)
   const [section, setSection] = useState<Section>('home')
   const [visited, setVisited] = useState<Set<Section>>(() => new Set())
+  
+  const [isRoomTour, setIsRoomTour] = useState(false)
+  const [showTourPrompt, setShowTourPrompt] = useState(false)
+
   const sfx = useSfx(muted)
 
   const goTo = useCallback(
@@ -47,11 +51,15 @@ export function PortfolioApp() {
       if (target.closest('input, textarea, select')) return
       if (e.key === 'ArrowRight') step(1)
       else if (e.key === 'ArrowLeft') step(-1)
-      else if (e.key === 'Escape') goTo('home')
+      else if (e.key === 'Escape') {
+        if (isRoomTour) setIsRoomTour(false)
+        else if (showTourPrompt) setShowTourPrompt(false)
+        else goTo('home')
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [scene, step, goTo])
+  }, [scene, step, goTo, isRoomTour, showTourPrompt])
 
   const handleStart = useCallback(() => {
     sfx.start()
@@ -62,6 +70,26 @@ export function PortfolioApp() {
     sfx.open()
     setScene('room')
   }, [sfx])
+
+  const handleDoorClick = useCallback(() => {
+    if (typeof window !== 'undefined' && window.innerWidth >= 1024) {
+      sfx.close()
+      setSection('home')
+      setScene('menu')
+      return
+    }
+
+    if (isRoomTour) {
+      sfx.close()
+      setIsRoomTour(false)
+      setShowTourPrompt(false)
+    } else {
+      sfx.click()
+      // Tutup semua modal pop-up yang sedang terbuka dengan kembali ke section home
+      setSection('home')
+      setShowTourPrompt(true)
+    }
+  }, [isRoomTour, sfx])
 
   const controls = (
     <SystemControls
@@ -80,12 +108,13 @@ export function PortfolioApp() {
       {scene !== 'loading' && (
         <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
           <RoomStage
-            theme={theme}
-            blurred={scene === 'menu'}
-            interactive={scene === 'room'}
-            active={section}
-            onHotspot={goTo}
-          />
+  theme={theme}
+  blurred={scene === 'menu'}
+  interactive={scene === 'room'}
+  active={section}
+  onHotspot={goTo}
+  isRoomTour={isRoomTour}
+/>
         </motion.div>
       )}
 
@@ -120,17 +149,35 @@ export function PortfolioApp() {
             <TopBar
               section={section}
               visited={visited}
+              isRoomTour={isRoomTour}
+              onDoorClick={handleDoorClick}
               controls={controls}
-              onExit={() => {
-                sfx.close()
-                setSection('home')
-                setScene('menu')
-              }}
             />
+
             <AnimatePresence mode="wait">
-              {section !== 'home' && <ContentModal key={section} section={section} onClose={() => goTo('home')} />}
+              {section !== 'home' && !isRoomTour && (
+                <ContentModal key={section} section={section} onClose={() => goTo('home')} />
+              )}
             </AnimatePresence>
-            <Dock section={section} onSelect={goTo} onPrev={() => step(-1)} onNext={() => step(1)} />
+
+            {!isRoomTour && (
+              <Dock
+                section={section}
+                onSelect={goTo}
+                onPrev={() => step(-1)}
+                onNext={() => step(1)}
+                showTourPrompt={showTourPrompt}
+                onTourYes={() => {
+                  sfx.click()
+                  setShowTourPrompt(false)
+                  setIsRoomTour(true)
+                }}
+                onTourNo={() => {
+                  sfx.click()
+                  setShowTourPrompt(false)
+                }}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

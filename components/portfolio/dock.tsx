@@ -52,11 +52,17 @@ export function Dock({
   onSelect,
   onPrev,
   onNext,
+  showTourPrompt,
+  onTourYes,
+  onTourNo,
 }: {
   section: Section
   onSelect: (s: Section) => void
   onPrev: () => void
   onNext: () => void
+  showTourPrompt?: boolean
+  onTourYes?: () => void
+  onTourNo?: () => void
 }) {
   const { navRef, buttonRefs, layout } = useDockLayout()
 
@@ -70,7 +76,14 @@ export function Dock({
       transition={{ duration: 0.4, delay: 0.1 }}
       className="pointer-events-auto absolute bottom-3 left-1/2 z-40 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 [--avatar-h:clamp(40px,9vh,70px)] sm:bottom-4 md:[--avatar-h:clamp(70px,14vh,120px)]"
     >
-      {layout && <AvatarGuide section={section} layout={layout} onAdvance={onNext} />}
+      {layout && <AvatarGuide
+  section={section}
+  layout={layout}
+  onAdvance={onNext}
+  showTourPrompt={showTourPrompt}
+  onTourYes={onTourYes}
+  onTourNo={onTourNo}
+/>}
 
       <div className="relative flex items-center gap-1 rounded-2xl border-2 border-gold/40 bg-panel/90 p-1.5 shadow-[0_10px_40px_rgba(5,3,20,0.6)] backdrop-blur-md">
         {/* Tombol Panah Kiri (Paling Kiri) */}
