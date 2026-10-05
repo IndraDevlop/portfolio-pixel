@@ -101,21 +101,19 @@ export function AvatarGuide({
   return (
     <>
       <motion.div
-        className={`pointer-events-none absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] z-[60] ${
-          modalOpen ? 'max-md:hidden' : ''
-        }`}
+       className="pointer-events-auto absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] z-[60]"
         style={{ width: bubbleWidth }}
         initial={false}
         animate={{ 
           x: bubbleLeft, 
-          opacity: isBubbleVisible ? 1 : 0, // Hilang memudar atau Muncul penuh
-          pointerEvents: isBubbleVisible ? "auto" : "none" // Matikan klik saat hilang
+          opacity: isBubbleVisible ? 1 : 0,
+          pointerEvents: isBubbleVisible ? "auto" : "none"
         }}
         transition={{ 
-          x: { type: "tween", duration: 2.7, ease: "easeInOut" }, // Gerak jalan tetap santai 1 detik
-          opacity: { duration: 0.3 } // Fade-out/in cepat (0.3 detik)
+          x: { type: "tween", duration: 2.7, ease: "easeInOut" },
+          opacity: { duration: 0.3 }
         }}
-      >
+        >
         <motion.div
           animate={{ y: [0, -5, 0] }} // Naik 5px, turun lagi ke 0
           transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }} // Durasi loop 2.5 detik
@@ -171,12 +169,12 @@ export function AvatarGuide({
         // Samain persis transisinya dengan dialog biar sinkron bergeraknya!
         transition={{ type: "tween", duration: 2.7, ease: "easeInOut" }}
         onAnimationComplete={() => setIsWalking(false)} 
-      >
+        >
         <div 
           className="-translate-x-1/2 cursor-pointer"
           onMouseEnter={() => setIsBubbleVisible(true)} // Muncul saat di-hover di PC
           onClick={() => setIsBubbleVisible(true)} // Muncul saat ditap di HP
-        >
+          >
           {/* Kontainer Avatar dengan flip horizontal otomatis jika menghadap ke kiri */}
           <div 
             className={`relative block h-[var(--avatar-h)] w-auto max-w-none drop-shadow-[0_6px_4px_rgba(0,0,0,0.45)] transition-transform duration-200 ${

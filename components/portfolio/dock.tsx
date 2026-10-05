@@ -68,7 +68,7 @@ export function Dock({
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 60, opacity: 0 }}
       transition={{ duration: 0.4, delay: 0.1 }}
-      className="pointer-events-auto absolute bottom-3 left-1/2 z-40 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 [--avatar-h:clamp(56px,12vh,100px)] sm:bottom-4 md:[--avatar-h:clamp(70px,14vh,120px)]"
+      className="pointer-events-auto absolute bottom-3 left-1/2 z-40 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 [--avatar-h:clamp(40px,9vh,70px)] sm:bottom-4 md:[--avatar-h:clamp(70px,14vh,120px)]"
     >
       {layout && <AvatarGuide section={section} layout={layout} onAdvance={onNext} />}
 
