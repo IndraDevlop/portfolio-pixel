@@ -101,7 +101,7 @@ export function AvatarGuide({
   return (
     <>
       <motion.div
-        className={`pointer-events-auto absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] ${
+        className={`pointer-events-none absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] z-[60] ${
           modalOpen ? 'max-md:hidden' : ''
         }`}
         style={{ width: bubbleWidth }}
@@ -165,7 +165,7 @@ export function AvatarGuide({
           />
       </motion.div>
       <motion.div
-        className="pointer-events-none absolute bottom-full left-0"
+        className="pointer-events-none absolute bottom-full left-0 z-[60]"
         initial={false}
         animate={{ x: avatarX }}
         // Samain persis transisinya dengan dialog biar sinkron bergeraknya!
