@@ -26,10 +26,13 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
 
-  const handlePan = (dx: number, dy: number) => {
-    // Naikkan batas kanan dari 180 jadi misal 350 (atau lebih) supaya bisa digeser mentok sampai ujung kanan
-    setPanX((prev) => Math.max(Math.min(prev + dx, 560), -560))
-    setPanY((prev) => Math.max(Math.min(prev + dy, 30), -60))
+ const handlePan = (dx: number, dy: number) => {
+    // Hitung batas geser secara otomatis berdasarkan lebar & tinggi layar device secara dinamis
+    const maxPanX = typeof window !== 'undefined' ? window.innerWidth * 0.55 : 400
+    const maxPanY = typeof window !== 'undefined' ? window.innerHeight * 0.25 : 80
+
+    setPanX((prev) => Math.max(Math.min(prev + dx, maxPanX), -maxPanX))
+    setPanY((prev) => Math.max(Math.min(prev + dy, maxPanY), -maxPanY))
   }
 
   return (
