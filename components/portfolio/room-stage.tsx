@@ -27,12 +27,16 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [panY, setPanY] = useState(0)
 
  const handlePan = (dx: number, dy: number) => {
-    // Hitung batas geser secara otomatis berdasarkan lebar & tinggi layar device secara dinamis
-    const maxPanX = typeof window !== 'undefined' ? window.innerWidth * 0.55 : 400
-    const maxPanY = typeof window !== 'undefined' ? window.innerHeight * 0.25 : 80
+    if (typeof window === 'undefined') return
+
+    // Hitung lebar wadah background art secara otomatis berdasarkan tinggi layar (aspect ratio 16:9)
+    const containerWidth = window.innerHeight * (16 / 9) * (177.78 / 100) // atau perkiraan lebar penuh art
+    // Selisih antara lebar background dan lebar layar HP murni
+    const maxPanX = Math.max(0, (window.innerHeight * (177.78 / 100) - window.innerWidth) / 2 + 80)
 
     setPanX((prev) => Math.max(Math.min(prev + dx, maxPanX), -maxPanX))
-    setPanY((prev) => Math.max(Math.min(prev + dy, maxPanY), -maxPanY))
+    // Kunci mati batas bawah di 0 agar tidak bocor, dan batasi atas secukupnya
+    setPanY((prev) => Math.max(Math.min(prev + dy, 0), -80))
   }
 
   return (
