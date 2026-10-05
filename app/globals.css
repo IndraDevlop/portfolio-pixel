@@ -1,0 +1,162 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-pixel: var(--font-pixelify), ui-monospace, monospace;
+
+  --color-night: #0e0b24;
+  --color-panel: #1b1736;
+  --color-panel-2: #26214a;
+  --color-gold: #f6c75a;
+  --color-gold-deep: #b9862a;
+  --color-pink: #f5a3c0;
+  --color-pink-deep: #b4637f;
+  --color-cream: #efe9f7;
+  --color-lavender: #a59cc9;
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  color-scheme: dark;
+  --background: #0e0b24;
+  --foreground: #efe9f7;
+  --card: #1b1736;
+  --card-foreground: #efe9f7;
+  --popover: #1b1736;
+  --popover-foreground: #efe9f7;
+  --primary: #f6c75a;
+  --primary-foreground: #1b1736;
+  --secondary: #26214a;
+  --secondary-foreground: #efe9f7;
+  --muted: #26214a;
+  --muted-foreground: #a59cc9;
+  --accent: #f5a3c0;
+  --accent-foreground: #1b1736;
+  --destructive: #f87171;
+  --border: rgba(246, 199, 90, 0.25);
+  --input: rgba(165, 156, 201, 0.3);
+  --ring: #f6c75a;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body {
+    @apply h-full overflow-hidden;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .pixelated {
+    image-rendering: pixelated;
+  }
+  .text-glow-gold {
+    text-shadow:
+      0 3px 0 #b9862a,
+      0 0 18px rgba(246, 199, 90, 0.55),
+      0 0 40px rgba(246, 199, 90, 0.25);
+  }
+  .scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.12) 0px,
+      rgba(255, 255, 255, 0.12) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  }
+  .btn-pixel {
+    @apply relative bg-pink text-panel font-pixel transition-transform;
+    box-shadow:
+      0 4px 0 var(--color-pink-deep),
+      0 0 0 2px rgba(255, 255, 255, 0.15) inset,
+      0 0 28px rgba(245, 163, 192, 0.35);
+  }
+  .btn-pixel:hover {
+    transform: translateY(-1px);
+  }
+  .btn-pixel:active {
+    transform: translateY(3px);
+    box-shadow:
+      0 1px 0 var(--color-pink-deep),
+      0 0 0 2px rgba(255, 255, 255, 0.15) inset;
+  }
+  .panel-glow {
+    box-shadow:
+      0 0 0 1px rgba(246, 199, 90, 0.15) inset,
+      0 0 40px rgba(246, 199, 90, 0.12),
+      0 20px 60px rgba(5, 3, 20, 0.6);
+  }
+  .scrollbar-cozy {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(246, 199, 90, 0.35) transparent;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
