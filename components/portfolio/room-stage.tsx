@@ -28,7 +28,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
 
   const handlePan = (dx: number, dy: number) => {
     // Naikkan batas kanan dari 180 jadi misal 350 (atau lebih) supaya bisa digeser mentok sampai ujung kanan
-    setPanX((prev) => Math.max(Math.min(prev + dx, 600), -600))
+    setPanX((prev) => Math.max(Math.min(prev + dx, 560), -560))
     setPanY((prev) => Math.max(Math.min(prev + dy, 30), -60))
   }
 
