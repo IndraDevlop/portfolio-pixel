@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { HOTSPOTS, POSTERS, type Section, type Theme } from '@/lib/portfolio-data'
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
@@ -25,19 +25,20 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   
+  // State interaktif untuk buka/tutup jendela (ditempatkan di dalam komponen dengan benar)
+  const [isWindowOpen, setIsWindowOpen] = useState(false)
+  
   // Referensi ke elemen wadah gambar untuk kalkulasi batas asli secara presisi
   const stageContainerRef = useRef<HTMLDivElement>(null)
 
   const handlePan = (dx: number, dy: number) => {
     if (!stageContainerRef.current) return
 
-    // Hitung batas maksimal secara otomatis berdasarkan lebar elemen kontainer dikurangi lebar layar device
     const containerWidth = stageContainerRef.current.offsetWidth
     const screenWidth = window.innerWidth
     const maxPanX = Math.max(0, (containerWidth - screenWidth) / 2)
 
     setPanX((prev) => Math.max(Math.min(prev + dx, maxPanX), -maxPanX))
-    // Kunci bawah di 0 agar tidak bocor, atas di -60
     setPanY((prev) => Math.max(Math.min(prev + dy, 0), -60))
   }
 
@@ -48,7 +49,6 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
       animate={{ filter: blurred ? 'blur(6px) brightness(0.55)' : 'blur(0px) brightness(1)', scale: blurred ? 1.04 : 1 }}
       transition={{ duration: 0.9, ease: 'easeInOut' }}
     >
-      {/* Wadah luar dengan ref untuk mengukur lebar asli background secara dinamis */}
       <div 
         ref={stageContainerRef}
         className="absolute left-1/2 top-1/2 min-h-[115dvh] aspect-video w-[max(100vw,177.78dvh)] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
@@ -58,6 +58,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           animate={{ x: panX, y: panY }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
+          {/* Background Utama Night */}
           <Image
             src="/images/room-night.png"
             alt="Cozy pixel-art bedroom at night"
@@ -66,6 +67,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             sizes="100vw"
             className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-100' : 'opacity-0'}`}
           />
+          {/* Background Utama Day */}
           <Image
             src="/images/room-day.png"
             alt="Cozy pixel-art bedroom on a sunny day"
@@ -73,6 +75,49 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             priority
             sizes="100vw"
             className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-0' : 'opacity-100'}`}
+          />
+
+          {/* Overlay Jendela Terbuka (jendela.PNG) dengan transisi mulus */}
+          <AnimatePresence>
+            {isWindowOpen && (
+              <motion.div
+                key="open-window"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="absolute inset-0 pointer-events-none z-10 translate-x-[8px] translate-y-[8px]"
+              >
+                <Image
+                  src="/images/jendela.PNG"
+                  alt="Open Window Overlay"
+                  fill
+                  sizes="100vw"
+                  className={`pixelated object-cover transition-all duration-1000 ${
+                    isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
+                  }`}
+                  // Atur scaleX di sini khusus untuk merampingkan sisi kanan dan kiri
+                  style={{ 
+                    transform: 'scaleX(0.94)', // Coba atur angkanya (misal 0.95 atau 0.97)
+                    transformOrigin: 'center' 
+                  }}
+                  draggable={false}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Hotspot area klik jendela yang presisi di atas gambar */}
+          <div
+            onClick={() => setIsWindowOpen((prev) => !prev)}
+            className="absolute cursor-pointer z-30"
+            style={{
+              top: '22%',
+              left: '37%',
+              width: '26%',
+              height: '42%',
+            }}
+            title="Klik untuk buka/tutup jendela"
           />
 
           <NightLighting visible={isNight} />
@@ -118,7 +163,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
                   type="button"
                   onClick={() => onHotspot(h.section)}
                   aria-label={`${h.label} — open ${h.section}`}
-                  className="group absolute z-10 -translate-x-1/2 -translate-y-1/2 p-2 transition-[left,top] duration-1000 focus-visible:outline-none"
+                  className="group absolute z-20 -translate-x-1/2 -translate-y-1/2 p-2 transition-[left,top] duration-1000 focus-visible:outline-none"
                   style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
                 >
                   <span className="relative flex size-4">
@@ -138,23 +183,17 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
         </motion.div>
       </div>
 
-      {/* Virtual D-Pad bergaya Console Stick PS (Sudut membulat, Celah presisi 45 derajat, Warna disesuaikan) */}
+      {/* Virtual D-Pad */}
       {isRoomTour && (
         <div className="pointer-events-auto absolute bottom-8 right-6 z-50 opacity-75 transition-opacity hover:opacity-100 md:hidden">
-          
           <div className="grid grid-cols-3 gap-0">
-            
-            {/* Baris 1: Tombol Atas */}
             <div />
             <div className="relative flex items-center justify-center">
-              {/* Panah Kecil Segitiga (Luar) */}
               <div className="absolute top-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[6px] border-b-white/40" />
-              
               <div className="translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
                   onClick={() => handlePan(0, 35)}
-                  /* Rounded ditambahkan di sini, base color disesuaikan dengan gradient tipis */
                   className="h-15 w-12 rounded-t-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
                   style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 67%, 67% 100%, 33% 100%, 0% 67%)' }}
                   aria-label="Pan Up"
@@ -163,11 +202,8 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             </div>
             <div />
 
-            {/* Baris 2: Tombol Kiri, Tengah, Tombol Kanan */}
             <div className="relative flex items-center justify-center">
-              {/* Panah Kecil Segitiga (Luar) */}
               <div className="absolute left-1 w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-white/40" />
-              
               <div className="translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
@@ -179,15 +215,12 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               </div>
             </div>
             
-            {/* Bagian Tengah */}
             <div className="flex items-center justify-center pointer-events-none z-10">
               <div className="size-1.5 rounded-full bg-white/20 shadow-[0_0_4px_rgba(0,0,0,0.5)]" /> 
             </div>
 
             <div className="relative flex items-center justify-center">
-              {/* Panah Kecil Segitiga (Luar) */}
               <div className="absolute right-1 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-white/40" />
-              
               <div className="-translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
@@ -199,12 +232,9 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               </div>
             </div>
 
-            {/* Baris 3: Tombol Bawah */}
             <div />
             <div className="relative flex items-center justify-center">
-              {/* Panah Kecil Segitiga (Luar) */}
               <div className="absolute bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-white/40" />
-              
               <div className="-translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
@@ -216,7 +246,6 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               </div>
             </div>
             <div />
-
           </div>
         </div>
       )}
