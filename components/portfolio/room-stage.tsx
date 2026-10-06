@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HOTSPOTS, POSTERS, type Section, type Theme } from '@/lib/portfolio-data'
@@ -30,7 +30,12 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   
   // Referensi ke elemen wadah gambar untuk kalkulasi batas asli secara presisi
   const stageContainerRef = useRef<HTMLDivElement>(null)
-
+  useEffect(() => {
+    if (isNight) {
+      setIsWindowOpen(false)
+    }
+  }, [isNight])
+  
   const handlePan = (dx: number, dy: number) => {
     if (!stageContainerRef.current) return
 
@@ -109,15 +114,18 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
 
           {/* Hotspot area klik jendela yang presisi di atas gambar */}
           <div
-            onClick={() => setIsWindowOpen((prev) => !prev)}
-            className="absolute cursor-pointer z-30"
+            onClick={() => {
+              if (isNight) return // Kalau malam, abaikan klik (tidak bisa dibuka)
+              setIsWindowOpen((prev) => !prev)
+            }}
+            className={`absolute z-30 ${isNight ? 'cursor-default' : 'cursor-pointer'}`}
             style={{
               top: '22%',
               left: '37%',
               width: '26%',
               height: '42%',
             }}
-            title="Klik untuk buka/tutup jendela"
+            title={isNight ? "Jendela tidak bisa dibuka di malam hari" : "Klik untuk buka/tutup jendela"}
           />
 
           <NightLighting visible={isNight} />
