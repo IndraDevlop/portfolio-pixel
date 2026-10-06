@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PROFILE, SPEECH, SECTIONS, SECTION_LABELS, type Section } from '@/lib/portfolio-data'
+import { PROFILE, SPEECH, SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 
 const SLIDE = { type: 'spring', stiffness: 22, damping: 28, mass: 2.2 } as const
 const EDGE = 8
@@ -35,6 +35,7 @@ function useTypewriter(text: string) {
 export function AvatarGuide({
   section,
   layout,
+  theme = 'night', // Ditambahkan prop theme untuk cek day/night
   onAdvance,
   showTourPrompt,
   onTourYes,
@@ -42,11 +43,19 @@ export function AvatarGuide({
 }: {
   section: Section
   layout: DockLayout
+  theme?: Theme
   onAdvance: () => void
   showTourPrompt?: boolean
   onTourYes?: () => void
   onTourNo?: () => void
 }) {
+  const isDay = theme === 'day'
+
+  // Path aset dinamis berdasarkan mode Day / Night
+  const walkAvatarSrc = isDay ? '/images/avatar-walk-day.gif' : '/images/avatar-walk.gif'
+  const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
+  const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
+
   const promptText = "Are you ready to explore my room?"
   const activeText = showTourPrompt ? promptText : SPEECH[section]
   const { shown, done } = useTypewriter(activeText)
@@ -70,7 +79,7 @@ export function AvatarGuide({
   const prevXRef = useRef(avatarX)
 
   useEffect(() => {
-    if (showTourPrompt) return // Jangan reset kalau lagi prompt room tour
+    if (showTourPrompt) return 
     setIsTired(false)
     const afkTimer = setTimeout(() => {
       setIsTired(true)
@@ -209,14 +218,14 @@ export function AvatarGuide({
           >
             {isWalking ? (
               <img
-                src="/images/avatar-walk.gif"
+                src={walkAvatarSrc}
                 alt="Indra walking"
                 className="pixelated block h-full w-auto max-w-none object-contain"
                 draggable={false}
               />
             ) : isTired ? (
               <img
-                src="/images/avatar-tired.gif"
+                src={tiredAvatarSrc}
                 alt="Indra tired"
                 className="pixelated block h-full w-auto max-w-none object-contain"
                 draggable={false}
@@ -229,7 +238,7 @@ export function AvatarGuide({
                 className="h-full w-full"
               >
                 <img
-                  src="/images/avatar.png"
+                  src={idleAvatarSrc}
                   alt="Indra, the pixel-art guide"
                   className="pixelated block h-full w-auto max-w-none"
                   draggable={false}

@@ -163,6 +163,7 @@ export function PortfolioApp() {
             {!isRoomTour && (
               <Dock
                 section={section}
+                theme={theme} /* <-- Tambahkan baris ini bro */
                 onSelect={goTo}
                 onPrev={() => step(-1)}
                 onNext={() => step(1)}

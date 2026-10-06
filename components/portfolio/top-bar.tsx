@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { DoorOpen, LogOut, Moon, Sun, Volume2, VolumeX } from 'lucide-react'
+import { DoorOpen, LogOut, Volume2, VolumeX } from 'lucide-react'
 import { SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 
 const iconBtn =
@@ -19,19 +19,50 @@ export function SystemControls({
   onToggleMute: () => void
 }) {
   const isNight = theme === 'night'
+
   return (
     <div className="flex items-center gap-2">
+      {/* 3D Arcade Joystick Lever - Disesuaikan jadi size-10 (40x40px) agar sama persis dengan tombol speaker */}
       <button
         type="button"
         onClick={onToggleTheme}
-        className={iconBtn}
+        className="group relative flex size-10 items-center justify-center rounded-xl border border-gold/40 bg-panel/90 shadow-md backdrop-blur-sm transition-all hover:border-gold hover:shadow-[0_0_12px_rgba(246,199,90,0.4)] focus-visible:outline-2 focus-visible:outline-gold overflow-visible"
         aria-label={isNight ? 'Switch to day mode' : 'Switch to night mode'}
         aria-pressed={!isNight}
       >
-        <motion.span key={theme} initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }}>
-          {isNight ? <Moon className="size-[18px]" aria-hidden="true" /> : <Sun className="size-[18px] text-gold" aria-hidden="true" />}
-        </motion.span>
+        {/* Slot jalur vertikal - sedikit disesuaikan jadi h-7 supaya pas dalam ukuran size-10 */}
+        <div className="relative h-7 w-2 rounded-full bg-[#110d18] border border-gold/30 shadow-[inset_0_2px_4px_rgba(0,0,0,0.9)] flex items-center justify-center">
+          
+          {/* Batang Besi */}
+          <motion.div
+            className={`absolute w-0.5 rounded-full shadow-sm bg-gradient-to-b ${
+              isNight
+                ? 'from-gray-100 via-gray-400 to-gray-800'
+                : 'from-gray-800 via-gray-400 to-gray-100'
+            }`}
+            animate={{ 
+              height: '12px', 
+              y: isNight ? -1.5 : 1.5 
+            }}
+            transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+          />
+
+          {/* Bola Merah Arcade - Disetel ukurannya size-3.5 (14px) agar proporsional */}
+          <motion.div
+            className="absolute size-3.5 rounded-full bg-gradient-to-t from-red-900 via-red-600 to-red-400 shadow-[0_2px_4px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.5)] border border-red-950 z-20 pointer-events-none"
+            animate={{ 
+              // Jarak geser atas-bawah disesuaikan dengan tinggi slot size-10
+              y: isNight ? -8 : 8 
+            }}
+            transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+          />
+        </div>
+
+        <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-gold/40 bg-panel px-1.5 py-0.5 font-pixel text-[10px] text-gold opacity-0 shadow-md transition-opacity group-hover:opacity-100">
+          {isNight ? '🌙 Night' : '☀️ Day'}
+        </span>
       </button>
+
       <button
         type="button"
         onClick={onToggleMute}

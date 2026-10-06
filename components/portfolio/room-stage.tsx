@@ -138,46 +138,86 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
         </motion.div>
       </div>
 
-      {/* Virtual D-Pad / Joypad Panah Transparan khusus saat Room Tour aktif di Mobile */}
+      {/* Virtual D-Pad bergaya Console Stick PS (Sudut membulat, Celah presisi 45 derajat, Warna disesuaikan) */}
       {isRoomTour && (
-        <div className="pointer-events-auto absolute bottom-8 right-6 z-50 flex flex-col items-center gap-1 opacity-75 transition-opacity hover:opacity-100 md:hidden">
-          <button
-            type="button"
-            onClick={() => handlePan(0, -35)}
-            className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
-            aria-label="Pan Up"
-          >
-            <ChevronUp className="size-6" />
-          </button>
+        <div className="pointer-events-auto absolute bottom-8 right-6 z-50 opacity-75 transition-opacity hover:opacity-100 md:hidden">
+          
+          <div className="grid grid-cols-3 gap-0">
+            
+            {/* Baris 1: Tombol Atas */}
+            <div />
+            <div className="relative flex items-center justify-center">
+              {/* Panah Kecil Segitiga (Luar) */}
+              <div className="absolute top-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[6px] border-b-white/40" />
+              
+              <div className="translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
+                <button
+                  type="button"
+                  onClick={() => handlePan(0, 35)}
+                  /* Rounded ditambahkan di sini, base color disesuaikan dengan gradient tipis */
+                  className="h-15 w-12 rounded-t-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
+                  style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 67%, 67% 100%, 33% 100%, 0% 67%)' }}
+                  aria-label="Pan Up"
+                />
+              </div>
+            </div>
+            <div />
 
-          <div className="flex gap-8">
-            <button
-              type="button"
-              onClick={() => handlePan(55, 0)}
-              className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
-              aria-label="Pan Left"
-            >
-              <ChevronLeft className="size-6" />
-            </button>
+            {/* Baris 2: Tombol Kiri, Tengah, Tombol Kanan */}
+            <div className="relative flex items-center justify-center">
+              {/* Panah Kecil Segitiga (Luar) */}
+              <div className="absolute left-1 w-0 h-0 border-y-[4px] border-y-transparent border-r-[6px] border-r-white/40" />
+              
+              <div className="translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
+                <button
+                  type="button"
+                  onClick={() => handlePan(55, 0)}
+                  className="h-12 w-15 rounded-l-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
+                  style={{ clipPath: 'polygon(0% 0%, 67% 0%, 100% 33%, 100% 67%, 67% 100%, 0% 100%)' }}
+                  aria-label="Pan Left"
+                />
+              </div>
+            </div>
+            
+            {/* Bagian Tengah */}
+            <div className="flex items-center justify-center pointer-events-none z-10">
+              <div className="size-1.5 rounded-full bg-white/20 shadow-[0_0_4px_rgba(0,0,0,0.5)]" /> 
+            </div>
 
-            <button
-              type="button"
-              onClick={() => handlePan(-55, 0)}
-              className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
-              aria-label="Pan Right"
-            >
-              <ChevronRight className="size-6" />
-            </button>
+            <div className="relative flex items-center justify-center">
+              {/* Panah Kecil Segitiga (Luar) */}
+              <div className="absolute right-1 w-0 h-0 border-y-[4px] border-y-transparent border-l-[6px] border-l-white/40" />
+              
+              <div className="-translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
+                <button
+                  type="button"
+                  onClick={() => handlePan(-55, 0)}
+                  className="h-12 w-15 rounded-r-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
+                  style={{ clipPath: 'polygon(100% 0%, 100% 100%, 33% 100%, 0% 67%, 0% 33%, 33% 0%)' }}
+                  aria-label="Pan Right"
+                />
+              </div>
+            </div>
+
+            {/* Baris 3: Tombol Bawah */}
+            <div />
+            <div className="relative flex items-center justify-center">
+              {/* Panah Kecil Segitiga (Luar) */}
+              <div className="absolute bottom-1 w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[6px] border-t-white/40" />
+              
+              <div className="-translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
+                <button
+                  type="button"
+                  onClick={() => handlePan(0, -35)}
+                  className="h-15 w-12 rounded-b-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
+                  style={{ clipPath: 'polygon(0% 100%, 100% 100%, 100% 33%, 67% 0%, 33% 0%, 0% 33%)' }}
+                  aria-label="Pan Down"
+                />
+              </div>
+            </div>
+            <div />
+
           </div>
-
-          <button
-            type="button"
-            onClick={() => handlePan(0, 35)}
-            className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
-            aria-label="Pan Down"
-          >
-            <ChevronDown className="size-6" />
-          </button>
         </div>
       )}
     </motion.div>

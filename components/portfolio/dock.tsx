@@ -3,8 +3,9 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, Briefcase, ChevronLeft, ChevronRight, House, Mail, Monitor, Wrench, type LucideIcon } from 'lucide-react'
-import { SECTIONS, SECTION_LABELS, type Section } from '@/lib/portfolio-data'
+import { SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 import { AvatarGuide, type DockLayout } from './avatar-guide'
+
 
 const ICONS: Record<Section, LucideIcon> = {
   home: House,
@@ -49,6 +50,7 @@ function useDockLayout() {
 
 export function Dock({
   section,
+  theme,
   onSelect,
   onPrev,
   onNext,
@@ -57,6 +59,7 @@ export function Dock({
   onTourNo,
 }: {
   section: Section
+  theme: Theme
   onSelect: (s: Section) => void
   onPrev: () => void
   onNext: () => void
@@ -77,13 +80,14 @@ export function Dock({
       className="pointer-events-auto absolute bottom-3 left-1/2 z-40 w-max max-w-[calc(100vw-1rem)] -translate-x-1/2 [--avatar-h:clamp(40px,9vh,70px)] sm:bottom-4 md:[--avatar-h:clamp(70px,14vh,120px)]"
     >
       {layout && <AvatarGuide
-  section={section}
-  layout={layout}
-  onAdvance={onNext}
-  showTourPrompt={showTourPrompt}
-  onTourYes={onTourYes}
-  onTourNo={onTourNo}
-/>}
+        section={section}
+        layout={layout}
+        theme={theme} // <-- Oper juga theme-nya ke AvatarGuide di sini
+        onAdvance={onNext}
+        showTourPrompt={showTourPrompt}
+        onTourYes={onTourYes}
+        onTourNo={onTourNo}
+      />}
 
       <div className="relative flex items-center gap-1 rounded-2xl border-2 border-gold/40 bg-panel/90 p-1.5 shadow-[0_10px_40px_rgba(5,3,20,0.6)] backdrop-blur-md">
         {/* Tombol Panah Kiri (Paling Kiri) */}
