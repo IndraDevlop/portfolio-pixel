@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { HOTSPOTS, POSTERS, type Section, type Theme } from '@/lib/portfolio-data'
@@ -22,21 +22,23 @@ const WINDOW_STARS = [
 export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRoomTour }: Props) {
   const isNight = theme === 'night'
 
-  // State untuk mengontrol pergeseran panah room tour (dalam piksel atau persen)
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
+  
+  // Referensi ke elemen wadah gambar untuk kalkulasi batas asli secara presisi
+  const stageContainerRef = useRef<HTMLDivElement>(null)
 
- const handlePan = (dx: number, dy: number) => {
-    if (typeof window === 'undefined') return
+  const handlePan = (dx: number, dy: number) => {
+    if (!stageContainerRef.current) return
 
-    // Hitung lebar wadah background art secara otomatis berdasarkan tinggi layar (aspect ratio 16:9)
-    const containerWidth = window.innerHeight * (16 / 9) * (177.78 / 100) // atau perkiraan lebar penuh art
-    // Selisih antara lebar background dan lebar layar HP murni
-    const maxPanX = Math.max(0, (window.innerHeight * (177.78 / 100) - window.innerWidth) / 2 + 80)
+    // Hitung batas maksimal secara otomatis berdasarkan lebar elemen kontainer dikurangi lebar layar device
+    const containerWidth = stageContainerRef.current.offsetWidth
+    const screenWidth = window.innerWidth
+    const maxPanX = Math.max(0, (containerWidth - screenWidth) / 2)
 
     setPanX((prev) => Math.max(Math.min(prev + dx, maxPanX), -maxPanX))
-    // Kunci mati batas bawah di 0 agar tidak bocor, dan batasi atas secukupnya
-    setPanY((prev) => Math.max(Math.min(prev + dy, 0), -80))
+    // Kunci bawah di 0 agar tidak bocor, atas di -60
+    setPanY((prev) => Math.max(Math.min(prev + dy, 0), -60))
   }
 
   return (
@@ -46,10 +48,11 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
       animate={{ filter: blurred ? 'blur(6px) brightness(0.55)' : 'blur(0px) brightness(1)', scale: blurred ? 1.04 : 1 }}
       transition={{ duration: 0.9, ease: 'easeInOut' }}
     >
-      {/* Wadah luar: Tetap diam di tengah layar */}
-      <div className="absolute left-1/2 top-1/2 min-h-[115dvh] aspect-video w-[max(100vw,177.78dvh)] -translate-x-1/2 -translate-y-1/2 overflow-hidden">
-        
-        {/* Wadah dalam: Khusus bergerak digeser oleh panX dan panY */}
+      {/* Wadah luar dengan ref untuk mengukur lebar asli background secara dinamis */}
+      <div 
+        ref={stageContainerRef}
+        className="absolute left-1/2 top-1/2 min-h-[115dvh] aspect-video w-[max(100vw,177.78dvh)] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+      >
         <motion.div 
           className="absolute inset-0"
           animate={{ x: panX, y: panY }}
@@ -138,10 +141,9 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
       {/* Virtual D-Pad / Joypad Panah Transparan khusus saat Room Tour aktif di Mobile */}
       {isRoomTour && (
         <div className="pointer-events-auto absolute bottom-8 right-6 z-50 flex flex-col items-center gap-1 opacity-75 transition-opacity hover:opacity-100 md:hidden">
-          {/* Tombol Atas */}
           <button
             type="button"
-            onClick={() => handlePan(0, 60)}
+            onClick={() => handlePan(0, -35)}
             className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
             aria-label="Pan Up"
           >
@@ -149,20 +151,18 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           </button>
 
           <div className="flex gap-8">
-            {/* Tombol Kiri */}
             <button
               type="button"
-              onClick={() => handlePan(80, 0)}
+              onClick={() => handlePan(55, 0)}
               className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
               aria-label="Pan Left"
             >
               <ChevronLeft className="size-6" />
             </button>
 
-            {/* Tombol Kanan */}
             <button
               type="button"
-              onClick={() => handlePan(-80, 0)}
+              onClick={() => handlePan(-55, 0)}
               className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
               aria-label="Pan Right"
             >
@@ -170,10 +170,9 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             </button>
           </div>
 
-          {/* Tombol Bawah */}
           <button
             type="button"
-            onClick={() => handlePan(0, -60)}
+            onClick={() => handlePan(0, 35)}
             className="flex size-11 items-center justify-center rounded-xl border border-gold/40 bg-panel/80 text-gold shadow-lg backdrop-blur-sm active:bg-gold active:text-panel"
             aria-label="Pan Down"
           >
