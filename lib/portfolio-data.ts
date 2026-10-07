@@ -79,7 +79,7 @@ export const PROFILE = {
   location: 'Indonesia',
   bio: "I'm a full-stack developer who loves turning messy business processes into clean, delightful web apps. From HR platforms to interactive flipbooks, I care about fast interfaces, solid data models and code my teammates enjoy working in.",
   stats: [
-    { label: 'Years XP', value: '8+' },
+    { label: 'Years XP', value: '4+' },
     { label: 'Companies', value: '3' },
     { label: 'Core Tools', value: '5' },
   ],

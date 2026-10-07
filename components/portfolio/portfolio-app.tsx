@@ -177,27 +177,32 @@ export function PortfolioApp() {
             <AnimatePresence>
               {isRoomTour && (
                 <motion.div
-                  initial={{ y: 200, opacity: 0 }}
+                 initial={{ y: 500, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: 200, opacity: 0 }}
-                  transition={{ duration: 1.2, ease: 'easeInOut' }}
-                  className="pointer-events-none absolute bottom-90 left-12 z-[90] flex flex-col items-center"
+                  exit={{ y: 500, opacity: 0 }}
+                  transition={{ duration: 2.8, ease: 'easeOut' }}
+                  className="pointer-events-none absolute bottom-90 left-12 z-[90]"
                 >
                   <motion.div
-                    animate={{ y: [0, -8, 0] }}
+                    animate={{ 
+                      y: [0, -70, 0] // 0 = posisi di atas komputer, -50 = naik ke area boneka, kembali ke 0
+                    }}
                     transition={{
                       repeat: Infinity,
-                      duration: 3,
-                      ease: 'easeInOut'
+                      duration: 8, // Durasi 8 detik per siklus naik-turun agar gerakannya lambat & mulus
+                      ease: 'easeInOut',
+                      delay: 2.8 // Mulai patroli setelah selesai terbang dari bawah
                     }}
-                    className="flex flex-col items-center shrink-0"
+                    className="relative flex items-center"
                   >
-                    <img
-                      src="/images/avatar-balloon.gif" 
-                      alt="Indra flying with a balloon"
-                      className="pixelated w-20 h-auto drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
-                      draggable={false}
-                    />
+                    <div className="flex flex-col items-center shrink-0">
+                      <img
+                        src="/images/avatar-balloon.gif" 
+                        alt="Indra flying with a balloon"
+                        className="pixelated w-20 h-auto drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
+                        draggable={false}
+                      />
+                    </div>
                   </motion.div>
                   {/* Gelembung Dialog (Speech Bubble) */}
                   <AnimatePresence>
