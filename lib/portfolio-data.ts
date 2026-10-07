@@ -129,10 +129,10 @@ export const EXPERIENCE = [
 ]
 
 export const CONTACT = {
-  email: 'hello@indra.dev',
+  email: 'indrawansyah2109@gmail.com',
   socials: [
-    { label: 'GitHub', href: 'https://github.com/' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-    { label: 'Instagram', href: 'https://www.instagram.com/' },
+    { label: 'GitHub', href: 'https://github.com/IndraDevlop' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/indrawansyah' },
+    { label: 'Instagram', href: 'https://www.instagram.com/wans_dev/' },
   ],
 }
