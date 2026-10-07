@@ -14,28 +14,64 @@ export type DockLayout = {
   viewportWidth: number
 }
 
-function useTypewriter(text: string) {
+// Hook Typewriter yang sudah disinkronkan dengan Audio Looping
+function useTypewriterWithAudio(text: string) {
   const [count, setCount] = useState(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  // Inisialisasi audio looping
+  useEffect(() => {
+    const audio = new Audio('/audio/text-blip.mp3')
+    audio.volume = 0.3
+    audio.loop = true
+    audioRef.current = audio
+
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }, [])
+
   useEffect(() => {
     setCount(0)
+    const audio = audioRef.current
+
+    if (audio && text.length > 0) {
+      audio.currentTime = 0
+      audio.play().catch(() => {}) // Musik mulai jalan saat teks ngetik
+    }
+
     const id = window.setInterval(() => {
       setCount((c) => {
         if (c >= text.length) {
           window.clearInterval(id)
+          // Berhenti total pas teks selesai
+          if (audio) {
+            audio.pause()
+            audio.currentTime = 0
+          }
           return c
         }
         return c + 1
       })
     }, 22)
-    return () => window.clearInterval(id)
+
+    return () => {
+      window.clearInterval(id)
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+    }
   }, [text])
+
   return { shown: text.slice(0, count), done: count >= text.length }
 }
 
 export function AvatarGuide({
   section,
   layout,
-  theme = 'night', // Ditambahkan prop theme untuk cek day/night
+  theme = 'night',
   onAdvance,
   showTourPrompt,
   onTourYes,
@@ -51,14 +87,15 @@ export function AvatarGuide({
 }) {
   const isDay = theme === 'day'
 
-  // Path aset dinamis berdasarkan mode Day / Night
   const walkAvatarSrc = isDay ? '/images/avatar-walk-day.gif' : '/images/avatar-walk.gif'
   const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
   const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
 
   const promptText = "Are you ready to explore my room?"
   const activeText = showTourPrompt ? promptText : SPEECH[section]
-  const { shown, done } = useTypewriter(activeText)
+  
+  // Menggunakan typewriter yang sudah ada audionya
+  const { shown, done } = useTypewriterWithAudio(activeText)
   
   const modalOpen = section !== 'home'
   const nextSection = SECTIONS[(SECTIONS.indexOf(section) + 1) % SECTIONS.length]

@@ -25,17 +25,23 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   
-  // State interaktif untuk buka/tutup jendela (ditempatkan di dalam komponen dengan benar)
+  // State interaktif
   const [isWindowOpen, setIsWindowOpen] = useState(false)
-  
-  // Referensi ke elemen wadah gambar untuk kalkulasi batas asli secara presisi
-  const stageContainerRef = useRef<HTMLDivElement>(null)
+  const [isDeskLampOn, setIsDeskLampOn] = useState(true)   // Lampu meja komputer (default nyala)
+  const [isBedlampOn, setIsBedlampOn] = useState(true)     // Lampu tidur kasur (default nyala)
+
+  // Otomatis tutup jendela kalau ganti ke mode night
   useEffect(() => {
     if (isNight) {
       setIsWindowOpen(false)
+      setIsDeskLampOn(true)
+      setIsBedlampOn(true)
     }
   }, [isNight])
   
+  // Referensi ke elemen wadah gambar
+  const stageContainerRef = useRef<HTMLDivElement>(null)
+
   const handlePan = (dx: number, dy: number) => {
     if (!stageContainerRef.current) return
 
@@ -82,7 +88,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-0' : 'opacity-100'}`}
           />
 
-          {/* Overlay Jendela Terbuka (jendela.PNG) dengan transisi mulus */}
+          {/* 1. Overlay Jendela Terbuka */}
           <AnimatePresence>
             {isWindowOpen && (
               <motion.div
@@ -101,31 +107,94 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
                   className={`pixelated object-cover transition-all duration-1000 ${
                     isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
                   }`}
-                  // Atur scaleX di sini khusus untuk merampingkan sisi kanan dan kiri
-                  style={{ 
-                    transform: 'scaleX(0.94)', // Coba atur angkanya (misal 0.95 atau 0.97)
-                    transformOrigin: 'center' 
-                  }}
+                  style={{ transform: 'scaleX(0.97)', transformOrigin: 'center' }}
                   draggable={false}
                 />
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Hotspot area klik jendela yang presisi di atas gambar */}
+          {/* 2. Overlay Lampu Belajar / Meja Mati */}
+          <AnimatePresence>
+            {!isDeskLampOn && (
+              <motion.div
+                key="desk-lamp-off"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 pointer-events-none z-11 translate-x-[37px] translate-y-[16px]"
+              >
+                <Image
+                  src="/images/lampu-belajar.PNG"
+                  alt="Desk Lamp Off Overlay"
+                  fill
+                  sizes="100vw"
+                  className={`pixelated object-cover transition-all duration-1000 ${
+                    isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
+                  }`}
+                  draggable={false}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* 3. Overlay Lampu Tidur Kasur Mati */}
+          <AnimatePresence>
+            {!isBedlampOn && (
+              <motion.div
+                key="bed-lamp-off"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-0 pointer-events-none z-11"
+              >
+                <Image
+                  src="/images/lampu-tidur.PNG"
+                  alt="Bed Lamp Off Overlay"
+                  fill
+                  sizes="100vw"
+                  className={`pixelated object-cover transition-all duration-1000 ${
+                    isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
+                  }`}
+                  draggable={false}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Hotspot Area Klik Jendela */}
           <div
             onClick={() => {
-              if (isNight) return // Kalau malam, abaikan klik (tidak bisa dibuka)
+              if (isNight) return
               setIsWindowOpen((prev) => !prev)
             }}
             className={`absolute z-30 ${isNight ? 'cursor-default' : 'cursor-pointer'}`}
-            style={{
-              top: '22%',
-              left: '37%',
-              width: '26%',
-              height: '42%',
-            }}
+            style={{ top: '22%', left: '37%', width: '26%', height: '42%' }}
             title={isNight ? "Jendela tidak bisa dibuka di malam hari" : "Klik untuk buka/tutup jendela"}
+          />
+
+          {/* Hotspot Area Klik Lampu Meja Komputer */}
+          <div
+            onClick={() => {
+              if (isNight) return // Kalau malam, abaikan klik
+              setIsDeskLampOn((prev) => !prev)
+            }}
+            className={`absolute z-30 ${isNight ? 'pointer-events-none' : 'cursor-pointer'}`}
+            style={{ top: '45%', left: '4%', width: '10%', height: '25%' }}
+            title={isNight ? "Lampu tidak bisa diubah di malam hari" : "Klik untuk nyalakan/matikan lampu meja"}
+          />
+
+          {/* Hotspot Area Klik Lampu Tidur Kasur */}
+          <div
+            onClick={() => {
+              if (isNight) return // Kalau malam, abaikan klik
+              setIsBedlampOn((prev) => !prev)
+            }}
+            className={`absolute z-30 ${isNight ? 'pointer-events-none' : 'cursor-pointer'}`}
+            style={{ top: '60%', left: '90%', width: '10%', height: '25%' }}
+            title={isNight ? "Lampu tidak bisa diubah di malam hari" : "Klik untuk nyalakan/matikan lampu tidur"}
           />
 
           <NightLighting visible={isNight} />
