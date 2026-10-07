@@ -33,7 +33,7 @@ export function AboutContent() {
       <div className="flex items-center gap-4">
         <div className="flex size-20 shrink-0 items-start justify-center overflow-hidden rounded-2xl border-2 border-gold/60 bg-panel-2">
           {/* eslint-disable-next-line @next/next/no-img-element -- pixel avatar needs crisp rendering */}
-          <img src="/images/profil.png" alt="" className="pixelated mt-1 w-16" />
+          <img src="/images/profil.png" alt="" className="pixelated mt-1 w-30" />
         </div>
         <div>
           <p className="font-pixel text-2xl font-bold text-cream">{PROFILE.name}</p>

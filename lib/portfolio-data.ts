@@ -74,7 +74,7 @@ export const POSTERS: Poster[] = [
 ]
 
 export const PROFILE = {
-  name: 'Indra',
+  name: 'Indrawansyah',
   role: 'Full-Stack Developer',
   location: 'Indonesia',
   bio: "I'm a full-stack developer who loves turning messy business processes into clean, delightful web apps. From HR platforms to interactive flipbooks, I care about fast interfaces, solid data models and code my teammates enjoy working in.",
