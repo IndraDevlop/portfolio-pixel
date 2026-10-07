@@ -76,6 +76,7 @@ export function AvatarGuide({
   showTourPrompt,
   onTourYes,
   onTourNo,
+  isRoomTour = false,
 }: {
   section: Section
   layout: DockLayout
@@ -84,6 +85,7 @@ export function AvatarGuide({
   showTourPrompt?: boolean
   onTourYes?: () => void
   onTourNo?: () => void
+  isRoomTour?: boolean
 }) {
   const isDay = theme === 'day'
 
@@ -151,8 +153,40 @@ export function AvatarGuide({
 
   return (
     <>
+      {/* 🎈 Animasi Avatar Naik Balon Udara saat Room Tour Aktif */}
+      <AnimatePresence>
+        {isRoomTour && (
+          <motion.div
+            initial={{ y: '100vh', opacity: 0 }}
+            animate={{ 
+              y: ['0vh', '-2.5vh', '0vh'],
+              opacity: 1 
+            }}
+            exit={{ y: '100vh', opacity: 0 }}
+            transition={{
+              y: { 
+                ease: 'easeInOut',
+                duration: 1.5, 
+                delay: 0.2,
+                repeat: Infinity,
+                repeatType: 'reverse',
+              },
+              opacity: { duration: 0.8 }
+            }}
+            className="pointer-events-none absolute bottom-16 left-1/2 -translate-x-1/2 z-[90] flex flex-col items-center"
+          >
+            <img
+              src="/images/avatar-balloon.gif" 
+              alt="Indra flying with a balloon"
+              className="pixelated w-52 h-auto drop-shadow-[0_12px_24px_rgba(0,0,0,0.6)]"
+              draggable={false}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
-        className="pointer-events-auto absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] z-[60]"
+        className="pointer-events-auto absolute left-0 bottom-[calc(100%+var(--avatar-h)+0.5rem)] z-[80]"
         style={{ width: bubbleWidth }}
         initial={false}
         animate={{ 
@@ -236,7 +270,7 @@ export function AvatarGuide({
       </motion.div>
 
       <motion.div
-        className="pointer-events-none absolute bottom-full left-0 z-[60]"
+        className="pointer-events-none absolute bottom-full left-0 z-[80]"
         initial={false}
         animate={{ x: avatarX }}
         transition={{ type: "tween", duration: 2.7, ease: "easeInOut" }}

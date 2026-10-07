@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { SECTIONS, type Section, type Theme } from '@/lib/portfolio-data'
+import { PROFILE, SECTIONS, type Section, type Theme } from '@/lib/portfolio-data'
 import { useSfx } from '@/lib/use-sfx'
 import { LoadingScreen } from './loading-screen'
 import { MainMenu } from './main-menu'
@@ -22,7 +22,28 @@ export function PortfolioApp() {
   
   const [isRoomTour, setIsRoomTour] = useState(false)
   const [showTourPrompt, setShowTourPrompt] = useState(false)
+  const [tourSpeechReady, setTourSpeechReady] = useState(false)
+  useEffect(() => {
+    if (isRoomTour) {
+      // 1. Munculkan dialog setelah animasi terbang selesai (1.2 detik)
+      const showTimer = setTimeout(() => {
+        setTourSpeechReady(true)
+      }, 1200)
 
+      // 2. Hilangkan dialog secara otomatis setelah 5 detik dibaca
+      const hideTimer = setTimeout(() => {
+        setTourSpeechReady(false)
+      }, 6200)
+
+      return () => {
+        clearTimeout(showTimer)
+        clearTimeout(hideTimer)
+      }
+    } else {
+      setTourSpeechReady(false)
+    }
+  }, [isRoomTour])
+  
   const sfx = useSfx(muted)
 
   const goTo = useCallback(
@@ -108,13 +129,13 @@ export function PortfolioApp() {
       {scene !== 'loading' && (
         <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
           <RoomStage
-  theme={theme}
-  blurred={scene === 'menu'}
-  interactive={scene === 'room'}
-  active={section}
-  onHotspot={goTo}
-  isRoomTour={isRoomTour}
-/>
+            theme={theme}
+            blurred={scene === 'menu'}
+            interactive={scene === 'room'}
+            active={section}
+            onHotspot={goTo}
+            isRoomTour={isRoomTour}
+          />
         </motion.div>
       )}
 
@@ -153,32 +174,90 @@ export function PortfolioApp() {
               onDoorClick={handleDoorClick}
               controls={controls}
             />
-
+            <AnimatePresence>
+              {isRoomTour && (
+                <motion.div
+                  initial={{ y: 200, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 200, opacity: 0 }}
+                  transition={{ duration: 1.2, ease: 'easeInOut' }}
+                  className="pointer-events-none absolute bottom-90 left-12 z-[90] flex flex-col items-center"
+                >
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 3,
+                      ease: 'easeInOut'
+                    }}
+                    className="flex flex-col items-center shrink-0"
+                  >
+                    <img
+                      src="/images/avatar-balloon.gif" 
+                      alt="Indra flying with a balloon"
+                      className="pixelated w-20 h-auto drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)]"
+                      draggable={false}
+                    />
+                  </motion.div>
+                  {/* Gelembung Dialog (Speech Bubble) */}
+                  <AnimatePresence>
+                    {tourSpeechReady && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8, x: -10 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ duration: 0.3 }}
+                        className="pointer-events-auto absolute left-20 -top-6 w-[230px] sm:w-[260px] rounded-2xl border-2 border-gold/80 bg-panel/95 px-3 py-2.5 text-left shadow-[0_0_20px_rgba(246,199,90,0.2)] backdrop-blur-sm"
+                      >
+                        <span className="absolute -top-3 left-4 rounded-md bg-gold px-2 py-0.5 font-pixel text-[10px] font-semibold text-panel">
+                          Indra
+                        </span>
+                        <p className="font-pixel text-[11px] leading-relaxed text-cream mt-0.5">
+                          Feel free to look around my room! Click on any glowing dot to explore my projects.
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            {/* 1. Modal */}
             <AnimatePresence mode="wait">
               {section !== 'home' && !isRoomTour && (
                 <ContentModal key={section} section={section} onClose={() => goTo('home')} />
               )}
             </AnimatePresence>
 
-            {!isRoomTour && (
-              <Dock
-                section={section}
-                theme={theme} /* <-- Tambahkan baris ini bro */
-                onSelect={goTo}
-                onPrev={() => step(-1)}
-                onNext={() => step(1)}
-                showTourPrompt={showTourPrompt}
-                onTourYes={() => {
-                  sfx.click()
-                  setShowTourPrompt(false)
-                  setIsRoomTour(true)
-                }}
-                onTourNo={() => {
-                  sfx.click()
-                  setShowTourPrompt(false)
-                }}
-              />
-            )}
+            {/* 2. Dock & Avatar dengan AnimatePresence + z-50 supaya di depan modal dan animasinya jalan */}
+            <AnimatePresence>
+              {!isRoomTour && (
+                <motion.div
+                  initial={{ y: 150, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 150, opacity: 0 }}
+                  transition={{ duration: 0.9, ease: 'easeInOut' }}
+                  className="absolute inset-x-0 bottom-0 z-50 pointer-events-auto"
+                >
+                  <Dock
+                    section={section}
+                    theme={theme}
+                    onSelect={goTo}
+                    onPrev={() => step(-1)}
+                    onNext={() => step(1)}
+                    showTourPrompt={showTourPrompt}
+                    onTourYes={() => {
+                      sfx.click()
+                      setShowTourPrompt(false)
+                      setIsRoomTour(true)
+                    }}
+                    onTourNo={() => {
+                      sfx.click()
+                      setShowTourPrompt(false)
+                    }}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>

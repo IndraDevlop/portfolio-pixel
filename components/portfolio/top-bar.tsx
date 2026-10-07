@@ -22,7 +22,6 @@ export function SystemControls({
 
   return (
     <div className="flex items-center gap-2">
-      {/* 3D Arcade Joystick Lever - Disesuaikan jadi size-10 (40x40px) agar sama persis dengan tombol speaker */}
       <button
         type="button"
         onClick={onToggleTheme}
@@ -30,10 +29,7 @@ export function SystemControls({
         aria-label={isNight ? 'Switch to day mode' : 'Switch to night mode'}
         aria-pressed={!isNight}
       >
-        {/* Slot jalur vertikal - sedikit disesuaikan jadi h-7 supaya pas dalam ukuran size-10 */}
         <div className="relative h-7 w-2 rounded-full bg-[#110d18] border border-gold/30 shadow-[inset_0_2px_4px_rgba(0,0,0,0.9)] flex items-center justify-center">
-          
-          {/* Batang Besi */}
           <motion.div
             className={`absolute w-0.5 rounded-full shadow-sm bg-gradient-to-b ${
               isNight
@@ -46,12 +42,9 @@ export function SystemControls({
             }}
             transition={{ type: 'spring', stiffness: 350, damping: 22 }}
           />
-
-          {/* Bola Merah Arcade - Disetel ukurannya size-3.5 (14px) agar proporsional */}
           <motion.div
             className="absolute size-3.5 rounded-full bg-gradient-to-t from-red-900 via-red-600 to-red-400 shadow-[0_2px_4px_rgba(0,0,0,0.8),inset_0_1px_2px_rgba(255,255,255,0.5)] border border-red-950 z-20 pointer-events-none"
             animate={{ 
-              // Jarak geser atas-bawah disesuaikan dengan tinggi slot size-10
               y: isNight ? -8 : 8 
             }}
             transition={{ type: 'spring', stiffness: 350, damping: 22 }}
@@ -90,14 +83,10 @@ export function TopBar({
   controls: React.ReactNode
 }) {
   const tour = SECTIONS.filter((s) => s !== 'home')
+  
   return (
-    <motion.header
-      initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -40, opacity: 0 }}
-      transition={{ duration: 0.4 }}
-      className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-3 p-3 sm:p-4"
-    >
+    <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-3 p-3 sm:p-4">
+      {/* Tombol Kiri (Pintu / Exit) - Tetap Diam Aman */}
       <button
         type="button"
         onClick={onDoorClick}
@@ -114,10 +103,15 @@ export function TopBar({
         <span className="hidden rounded-xl bg-panel/70 px-3 py-1.5 font-pixel text-lg font-semibold text-gold text-glow-gold backdrop-blur-sm sm:inline">{"Indra's Room"}</span>
       </button>
 
-      {/* Sembunyikan progress bar di mobile jika sedang dalam mode room tour agar makin bersih */}
-      <div
+      {/* Bar Tengah Saja yang Animasi Slide ke Atas / Hilang saat Room Tour */}
+      <motion.div
+        animate={{ 
+          y: isRoomTour ? -60 : 0, 
+          opacity: isRoomTour ? 0 : 1 
+        }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
         className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-3 py-2 backdrop-blur-sm ${
-          isRoomTour ? 'max-md:hidden' : ''
+          isRoomTour ? 'max-md:hidden pointer-events-none' : ''
         }`}
         aria-label={`Tour progress: ${visited.size} of ${tour.length} rooms explored`}
       >
@@ -134,9 +128,10 @@ export function TopBar({
             />
           ))}
         </div>
-      </div>
+      </motion.div>
 
-      {controls}
-    </motion.header>
+      {/* Tombol Kanan (Saklar & Volume) - Tetap Diam Aman */}
+      <div>{controls}</div>
+    </header>
   )
 }
