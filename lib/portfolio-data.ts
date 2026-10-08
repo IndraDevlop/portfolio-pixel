@@ -142,8 +142,8 @@ export const TRANSLATIONS = {
   id: {
     loading: {
       subtitle: 'Sebuah petualangan portofolio',
-      messages: ['Memuat duniaku…','Menyambungkan kabel CRT…','Memasang lampu tidur…','Membersihkan rak buku…','Merapikan bantal…'],
-      ready: 'Kamar siap!',
+      messages: ['Beresin kamar dulu…','Sambungin kabel Hp…','Seduh kopi hangat…','Rapihkan tempat tidur…','nyalakan lampu…'],
+      ready: 'Ayo kita mulai!',
       start: 'Mulai'
     },
     room: {
@@ -157,15 +157,15 @@ export const TRANSLATIONS = {
     sections: {
       home: 'Beranda',
       about: 'Tentang',
-      toolbox: 'Perkakas',
+      toolbox: 'Alat',
       project: 'Projek',
       experience: 'Pengalaman',
       contact: 'Kontak',
     },
     meta: {
       about: { eyebrow: 'Profil Pemain', title: 'Tentang Saya' },
-      toolbox: { eyebrow: 'Inventaris', title: 'Alat Pengembangan' },
-      project: { eyebrow: 'Catatan Quest', title: 'Projek Saya' },
+      toolbox: { eyebrow: 'Inventaris', title: 'Alat yang saya gunakan' },
+      project: { eyebrow: 'Catatan Quest', title: 'Projek yang saya buat' },
       experience: { eyebrow: 'Perjalanan', title: 'Pengalaman Saya' },
       contact: { eyebrow: 'Kirim Pesan', title: "Ayo Ngobrol" },
     },
@@ -203,8 +203,8 @@ export const TRANSLATIONS = {
   en: {
     loading: {
       subtitle: 'A cozy portfolio adventure',
-      messages: ['Loading my world…','Plugging in the CRT…','Hanging the fairy lights…','Dusting the bookshelf…','Fluffing the pillows…'],
-      ready: 'Room ready!',
+      messages: ['Tidy up the room first…','Plug in the phone charger…','Brew a hot coffee…','Make the bed…','Turn on the lights…'],
+      ready: 'Let`s get started!',
       start: 'Press Start'
     },
     room: {
@@ -225,9 +225,9 @@ export const TRANSLATIONS = {
     },
     meta: {
       about: { eyebrow: 'Player Profile', title: 'About Me' },
-      toolbox: { eyebrow: 'Inventory', title: 'My Toolbox' },
-      project: { eyebrow: 'Quest Log', title: 'Projects' },
-      experience: { eyebrow: 'Journey', title: 'Experience' },
+      toolbox: { eyebrow: 'Inventory', title: 'The tools I use' },
+      project: { eyebrow: 'Quest Log', title: 'The project I created' },
+      experience: { eyebrow: 'Journey', title: 'My Experience' },
       contact: { eyebrow: 'Send a Raven', title: "Let's Talk" },
     },
     speech: {

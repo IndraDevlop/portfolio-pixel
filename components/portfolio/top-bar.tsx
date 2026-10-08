@@ -100,23 +100,31 @@ export function TopBar({
   return (
     // 💡 Padding dan Gap diperkecil di mobile
     <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-1 sm:gap-3 p-2 sm:p-4">
-      <button
-        type="button"
-        onClick={onDoorClick}
-        className="flex items-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-gold"
-        aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
-      >
-        <span className={iconBtn}>
-          {isRoomTour ? (
-            <LogOut className="size-[16px] sm:size-[18px] text-pink" aria-hidden="true" />
-          ) : (
-            <DoorOpen className="size-[16px] sm:size-[18px]" aria-hidden="true" />
-          )}
-        </span>
-        <span className="hidden rounded-xl bg-panel/70 px-3 py-1.5 font-pixel text-lg font-semibold text-gold text-glow-gold backdrop-blur-sm sm:inline">
-          {lang === 'id' ? "Kamar Indra" : "Indra's Room"}
-        </span>
-      </button>
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 rounded-xl bg-panel/70 px-3 py-1.5 backdrop-blur-sm border border-gold/20">
+            <img 
+              src="/logo-d.png" 
+              alt="Logo" 
+              className="size-7 object-contain pixelated" 
+              draggable={false}
+            />
+          </div>
+        <button
+          type="button"
+          onClick={onDoorClick}
+          className="flex items-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-gold"
+          aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
+        >
+          <span className={iconBtn}>
+            {isRoomTour ? (
+              <LogOut className="size-[16px] sm:size-[18px] text-pink" aria-hidden="true" />
+            ) : (
+              <DoorOpen className="size-[16px] sm:size-[18px]" aria-hidden="true" />
+            )}
+          </span>
+        </button>
+      </div>
+      
 
       {/* 💡 Progress bar tengah dibikin lebih ringkas di mobile */}
       <motion.div

@@ -120,8 +120,8 @@ export function LoadingScreen({
       <Starfield />
       <div className="relative flex w-full max-w-md flex-col items-center text-center">
         <motion.div
-          initial={{ scale: 0.6, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1, y: [0, -4, 0] }}
+        initial={{ scale: 0.6, opacity: 0, rotate: 14 }} // 💡 Mulai dengan posisi miring
+          animate={{ scale: 1, opacity: 1, y: [0, -4, 0], rotate: [-12, -8, 14] }} // 💡 Animasi goyang miring pelan
           transition={{ y: { repeat: Infinity, duration: 2.4, ease: 'easeInOut' }, default: { duration: 0.5 } }}
           className="mb-5 flex size-14 items-center justify-center rounded-2xl border border-pink/40 bg-panel shadow-[0_0_24px_rgba(245,163,192,0.25)]"
         >
