@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, Briefcase, ChevronLeft, ChevronRight, House, Mail, Monitor, Wrench, type LucideIcon } from 'lucide-react'
-import { SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
+import { SECTIONS, SECTION_LABELS, type Section, type Theme, type Language, TRANSLATIONS } from '@/lib/portfolio-data'
 import { AvatarGuide, type DockLayout } from './avatar-guide'
 
 
@@ -57,6 +57,7 @@ export function Dock({
   showTourPrompt,
   onTourYes,
   onTourNo,
+  lang,
 }: {
   section: Section
   theme: Theme
@@ -66,8 +67,10 @@ export function Dock({
   showTourPrompt?: boolean
   onTourYes?: () => void
   onTourNo?: () => void
+  lang: Language
 }) {
   const { navRef, buttonRefs, layout } = useDockLayout()
+  const t = TRANSLATIONS[lang]
 
   return (
     <motion.nav
@@ -87,6 +90,7 @@ export function Dock({
         showTourPrompt={showTourPrompt}
         onTourYes={onTourYes}
         onTourNo={onTourNo}
+        lang={lang}
       />}
 
       <div className="relative flex items-center gap-1 rounded-2xl border-2 border-gold/40 bg-panel/90 p-1.5 shadow-[0_10px_40px_rgba(5,3,20,0.6)] backdrop-blur-md">
@@ -118,7 +122,7 @@ export function Dock({
                   type="button"
                   onClick={() => onSelect(s)}
                   aria-current={active ? 'page' : undefined}
-                  aria-label={SECTION_LABELS[s]}
+                  aria-label={t.sections[s]}
                   className={`relative flex h-10 items-center gap-2 rounded-xl px-2.5 font-pixel text-sm transition-colors focus-visible:outline-2 focus-visible:outline-gold md:px-3.5 ${
                     active ? 'text-panel' : 'text-cream/80 hover:bg-panel-2 hover:text-cream'
                   }`}
@@ -131,7 +135,7 @@ export function Dock({
                     />
                   )}
                   <Icon className="relative size-[18px]" aria-hidden="true" />
-                  <span className="relative hidden md:inline">{SECTION_LABELS[s]}</span>
+                  <span className="relative hidden md:inline">{t.sections[s]}</span>
                 </button>
               </li>
             )

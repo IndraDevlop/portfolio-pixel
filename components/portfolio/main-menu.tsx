@@ -3,9 +3,17 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Play } from 'lucide-react'
-import { PROFILE } from '@/lib/portfolio-data'
+import { PROFILE, TRANSLATIONS, type Language } from '@/lib/portfolio-data'
 
-export function MainMenu({ onEnter }: { onEnter: () => void }) {
+export function MainMenu({ 
+  onEnter, 
+  lang = 'id' 
+}: { 
+  onEnter: () => void; 
+  lang?: Language 
+}) {
+  const t = TRANSLATIONS[lang]
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Enter') onEnter()
@@ -24,12 +32,14 @@ export function MainMenu({ onEnter }: { onEnter: () => void }) {
         transition={{ type: 'spring', stiffness: 220, damping: 22 }}
         className="panel-glow w-full max-w-md rounded-3xl border-2 border-gold/80 bg-panel/90 px-6 py-8 text-center backdrop-blur-sm sm:px-8"
       >
-        <p className="font-pixel text-xs uppercase tracking-[0.4em] text-pink">Main Menu</p>
-        <h1 id="menu-title" className="mt-3 font-pixel text-4xl font-bold text-gold text-glow-gold sm:text-5xl">
-          {"Indra's Room"}
+        <p className="font-pixel text-xs uppercase tracking-[0.4em] text-pink">
+          {lang === 'id' ? 'Menu Utama' : 'Main Menu'}
+        </p>
+        <h1 id="menu-title" className="mt-3 font-pixel text-2xl font-bold text-gold text-glow-gold sm:text-5xl">
+          {t.room.title}
         </h1>
         <p className="mx-auto mt-4 max-w-sm leading-relaxed text-cream/85 text-pretty">
-          {PROFILE.role} · Interactive Portfolio. A guided tour through my profile, toolbox and favourite builds.
+          {PROFILE.role} · {lang === 'id' ? 'Portofolio Interaktif. Tur terpandu melintasi profil, alat, dan karya favoritku.' : 'Interactive Portfolio. A guided tour through my profile, toolbox and favourite builds.'}
         </p>
         <button
           type="button"
@@ -37,11 +47,12 @@ export function MainMenu({ onEnter }: { onEnter: () => void }) {
           className="btn-pixel scanlines mt-7 flex w-full items-center justify-center gap-3 rounded-2xl py-3.5 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
         >
           <Play className="size-5 fill-current" aria-hidden="true" />
-          Start Exploring
+          {lang === 'id' ? 'Mulai Menjelajah' : 'Start Exploring'}
         </button>
         <p className="mt-3 font-pixel text-xs text-lavender">
-          Press{' '}
-          <kbd className="mx-1 rounded-md border border-gold/40 bg-night px-1.5 py-0.5 text-gold">Enter</kbd> to begin
+          {lang === 'id' ? 'Tekan' : 'Press'}{' '}
+          <kbd className="mx-1 rounded-md border border-gold/40 bg-night px-1.5 py-0.5 text-gold">Enter</kbd>{' '}
+          {lang === 'id' ? 'untuk mulai' : 'to begin'}
         </p>
       </motion.section>
     </div>

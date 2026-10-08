@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PROFILE, SECTIONS, type Section, type Theme } from '@/lib/portfolio-data'
+import { PROFILE, SECTIONS, type Section, type Theme, type Language, TRANSLATIONS } from '@/lib/portfolio-data'
 import { useSfx } from '@/lib/use-sfx'
 import { LoadingScreen } from './loading-screen'
 import { MainMenu } from './main-menu'
@@ -14,23 +14,70 @@ import { ContentModal } from './content-modal'
 type Scene = 'loading' | 'menu' | 'room'
 
 export function PortfolioApp() {
+  const [isMounted, setIsMounted] = useState(false)
   const [scene, setScene] = useState<Scene>('loading')
   const [theme, setTheme] = useState<Theme>('night')
   const [muted, setMuted] = useState(false)
+  const [lang, setLang] = useState<Language>('id')
+  
   const [section, setSection] = useState<Section>('home')
   const [visited, setVisited] = useState<Set<Section>>(() => new Set())
   
   const [isRoomTour, setIsRoomTour] = useState(false)
   const [showTourPrompt, setShowTourPrompt] = useState(false)
   const [tourSpeechReady, setTourSpeechReady] = useState(false)
+  
+  const [showContactTourHint, setShowContactTourHint] = useState(false)
+
+  const bgmRef = useRef<HTMLAudioElement | null>(null)
+
+  // 1. Semua pemanggilan Hooks / useEffect ditaruh di atas tanpa terhalang kondisi apapun
+  useEffect(() => {
+    setIsMounted(true)
+    const bgm = new Audio('/audio/bg-room.mp3')
+    bgm.loop = true
+    bgm.volume = 0.4
+    bgmRef.current = bgm
+
+    return () => {
+      bgm.pause()
+      bgmRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    if (bgmRef.current) {
+      bgmRef.current.muted = muted
+    }
+  }, [muted])
+
+  useEffect(() => {
+    let showTimer: NodeJS.Timeout
+    let hideTimer: NodeJS.Timeout
+
+    if (section === 'contact' && !isRoomTour) {
+      showTimer = setTimeout(() => {
+        setShowContactTourHint(true)
+        hideTimer = setTimeout(() => {
+          setShowContactTourHint(false)
+        }, 10000)
+      }, 3000)
+    } else {
+      setShowContactTourHint(false)
+    }
+
+    return () => {
+      clearTimeout(showTimer)
+      clearTimeout(hideTimer)
+    }
+  }, [section, isRoomTour])
+
   useEffect(() => {
     if (isRoomTour) {
-      // 1. Munculkan dialog setelah animasi terbang selesai (1.2 detik)
       const showTimer = setTimeout(() => {
         setTourSpeechReady(true)
       }, 1200)
 
-      // 2. Hilangkan dialog secara otomatis setelah 5 detik dibaca
       const hideTimer = setTimeout(() => {
         setTourSpeechReady(false)
       }, 6200)
@@ -85,6 +132,9 @@ export function PortfolioApp() {
   const handleStart = useCallback(() => {
     sfx.start()
     setScene('menu')
+    if (bgmRef.current) {
+      bgmRef.current.play().catch(e => console.log("BGM play error:", e))
+    }
   }, [sfx])
 
   const handleEnter = useCallback(() => {
@@ -106,7 +156,6 @@ export function PortfolioApp() {
       setShowTourPrompt(false)
     } else {
       sfx.click()
-      // Tutup semua modal pop-up yang sedang terbuka dengan kembali ke section home
       setSection('home')
       setShowTourPrompt(true)
     }
@@ -116,13 +165,25 @@ export function PortfolioApp() {
     <SystemControls
       theme={theme}
       muted={muted}
+      lang={lang}
       onToggleTheme={() => {
         sfx.click()
         setTheme((t) => (t === 'night' ? 'day' : 'night'))
       }}
       onToggleMute={() => setMuted((m) => !m)}
+      onToggleLang={() => {
+        sfx.click()
+        setLang((l) => (l === 'id' ? 'en' : 'id'))
+      }}
     />
   )
+
+  const tRoom = TRANSLATIONS[lang].room
+
+  // 2. Pengecekan isMounted ditaruh di PALING BAWAH setelah seluruh Hooks selesai dipanggil
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <main className="relative h-dvh w-screen overflow-hidden bg-night text-cream">
@@ -147,14 +208,21 @@ export function PortfolioApp() {
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.6 }}
           >
-            <LoadingScreen onStart={handleStart} />
+            <LoadingScreen 
+              onStart={handleStart} 
+              lang={lang} 
+              onToggleLang={() => {
+                sfx.click()
+                setLang((l) => (l === 'id' ? 'en' : 'id'))
+              }} 
+            />
           </motion.div>
         )}
 
         {scene === 'menu' && (
           <motion.div key="menu" className="absolute inset-0 z-20" exit={{ opacity: 0 }} transition={{ duration: 0.4 }}>
             <div className="absolute right-3 top-3 z-30 sm:right-4 sm:top-4">{controls}</div>
-            <MainMenu onEnter={handleEnter} />
+            <MainMenu onEnter={handleEnter} lang={lang} />
           </motion.div>
         )}
 
@@ -173,7 +241,35 @@ export function PortfolioApp() {
               isRoomTour={isRoomTour}
               onDoorClick={handleDoorClick}
               controls={controls}
+              lang={lang}
             />
+
+            <AnimatePresence>
+              {showContactTourHint && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.8 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute top-[65px] left-1 z-[100] w-[200px] md:hidden pointer-events-none"
+                >
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+                    className="relative rounded-2xl border-2 border-gold/80 bg-panel/95 px-3 py-2.5 text-left shadow-[0_0_20px_rgba(246,199,90,0.2)] backdrop-blur-sm"
+                  >
+                    <div className="absolute -top-[10px] left-3 h-4 w-4 rotate-45 border-t-2 border-l-2 border-gold/80 bg-panel/95" />
+                    <span className="absolute -top-3 left-8 rounded-md bg-gold px-2 py-0.5 font-pixel text-[10px] font-semibold text-panel">
+                      Hint
+                    </span>
+                    <p className="font-pixel text-[10px] leading-relaxed text-cream mt-1">
+                      {tRoom.tourHint}
+                    </p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <AnimatePresence>
               {isRoomTour && (
                 <motion.div
@@ -184,15 +280,8 @@ export function PortfolioApp() {
                   className="pointer-events-none absolute bottom-90 left-12 z-[90]"
                 >
                   <motion.div
-                    animate={{ 
-                      y: [0, -70, 0] // 0 = posisi di atas komputer, -50 = naik ke area boneka, kembali ke 0
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 8, // Durasi 8 detik per siklus naik-turun agar gerakannya lambat & mulus
-                      ease: 'easeInOut',
-                      delay: 2.8 // Mulai patroli setelah selesai terbang dari bawah
-                    }}
+                    animate={{ y: [0, -70, 0] }}
+                    transition={{ repeat: Infinity, duration: 8, ease: 'easeInOut', delay: 2.8 }}
                     className="relative flex items-center"
                   >
                     <div className="flex flex-col items-center shrink-0">
@@ -204,7 +293,6 @@ export function PortfolioApp() {
                       />
                     </div>
                   </motion.div>
-                  {/* Gelembung Dialog (Speech Bubble) */}
                   <AnimatePresence>
                     {tourSpeechReady && (
                       <motion.div
@@ -218,7 +306,7 @@ export function PortfolioApp() {
                           Indra
                         </span>
                         <p className="font-pixel text-[11px] leading-relaxed text-cream mt-0.5">
-                          Feel free to look around my room! Click on any glowing dot to explore my projects.
+                          {tRoom.tourSpeech}
                         </p>
                       </motion.div>
                     )}
@@ -226,14 +314,13 @@ export function PortfolioApp() {
                 </motion.div>
               )}
             </AnimatePresence>
-            {/* 1. Modal */}
+
             <AnimatePresence mode="wait">
               {section !== 'home' && !isRoomTour && (
-                <ContentModal key={section} section={section} onClose={() => goTo('home')} />
+                <ContentModal key={section} section={section} onClose={() => goTo('home')} lang={lang} />
               )}
             </AnimatePresence>
 
-            {/* 2. Dock & Avatar dengan AnimatePresence + z-50 supaya di depan modal dan animasinya jalan */}
             <AnimatePresence>
               {!isRoomTour && (
                 <motion.div
@@ -250,6 +337,7 @@ export function PortfolioApp() {
                     onPrev={() => step(-1)}
                     onNext={() => step(1)}
                     showTourPrompt={showTourPrompt}
+                    lang={lang}
                     onTourYes={() => {
                       sfx.click()
                       setShowTourPrompt(false)

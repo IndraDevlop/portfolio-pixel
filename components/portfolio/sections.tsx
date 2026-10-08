@@ -3,31 +3,26 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AtSign, Code, Database, ExternalLink, Layers, Mail, MapPin, Send, Server, Wind, type LucideIcon } from 'lucide-react'
-import { CONTACT, EXPERIENCE, EXTRA_TOOLS, PROFILE, PROJECTS, TOOLBOX } from '@/lib/portfolio-data'
+import { CONTACT, EXPERIENCE, EXTRA_TOOLS, PROFILE, PROJECTS, TOOLBOX, TRANSLATIONS, type Language } from '@/lib/portfolio-data'
 
 const item = {
   hidden: { opacity: 0, y: 10 },
   show: (i: number) => ({ opacity: 1, y: 0, transition: { delay: 0.08 + i * 0.06 } }),
 }
+
 const containerVariants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.3, // Jeda waktu kemunculan antar kartu project
+      staggerChildren: 0.3,
     },
   },
 }
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 40 }, // Mulai dari bawah sejauh 30px dengan opacity 0
-  show: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.8, ease: 'easeOut' } 
-  },
-}
-export function AboutContent() {
+export function AboutContent({ lang = 'id' }: { lang?: Language }) {
+  const t = TRANSLATIONS[lang]
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center gap-4">
@@ -44,10 +39,10 @@ export function AboutContent() {
           </p>
         </div>
       </div>
-      <p className="leading-relaxed text-cream/85 text-pretty">{PROFILE.bio}</p>
+      <p className="leading-relaxed text-cream/85 text-pretty">{t.profile.bio}</p>
 
       <dl className="grid grid-cols-3 gap-2">
-        {PROFILE.stats.map((s, i) => (
+        {t.profile.stats.map((s, i) => (
           <motion.div
             key={s.label}
             custom={i}
@@ -63,7 +58,9 @@ export function AboutContent() {
       </dl>
 
       <div>
-        <h3 className="mb-3 font-pixel text-xs uppercase tracking-[0.3em] text-pink">Player Stats</h3>
+        <h3 className="mb-3 font-pixel text-xs uppercase tracking-[0.3em] text-pink">
+          {lang === 'id' ? 'Atribut Pemain' : 'Player Stats'}
+        </h3>
         <ul className="flex flex-col gap-3">
           {PROFILE.attributes.map((a, i) => (
             <li key={a.label}>
@@ -95,7 +92,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   'SQL Server': Database,
 }
 
-export function ToolboxContent() {
+export function ToolboxContent({ lang = 'id' }: { lang?: Language }) {
   return (
     <div className="flex flex-col gap-5">
       <ul className="grid grid-cols-2 gap-3">
@@ -133,7 +130,9 @@ export function ToolboxContent() {
         })}
       </ul>
       <div>
-        <h3 className="mb-2 font-pixel text-xs uppercase tracking-[0.3em] text-pink">Also in the bag</h3>
+        <h3 className="mb-2 font-pixel text-xs uppercase tracking-[0.3em] text-pink">
+          {lang === 'id' ? 'Alat lainnya' : 'Also in the bag'}
+        </h3>
         <ul className="flex flex-wrap gap-2">
           {EXTRA_TOOLS.map((t) => (
             <li key={t} className="rounded-lg border border-lavender/30 bg-panel-2/60 px-2.5 py-1 text-sm text-cream/90">
@@ -146,7 +145,9 @@ export function ToolboxContent() {
   )
 }
 
-export function ProjectContent() {
+export function ProjectContent({ lang = 'id' }: { lang?: Language }) {
+  const t = TRANSLATIONS[lang]
+
   return (
     <motion.ul 
       variants={containerVariants}
@@ -157,16 +158,19 @@ export function ProjectContent() {
       {PROJECTS.map((p, i) => (
         <motion.li
           key={p.title}
-          variants={itemVariants}
+          custom={i}
+          variants={item}
+          initial="hidden"
+          animate="show"
           whileHover={{ x: 4 }}
           className="relative overflow-hidden rounded-xl border border-gold/25 bg-night/50 p-4"
         >
           <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1" style={{ backgroundColor: p.accent }} />
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-pixel text-lg text-cream">{p.title}</h3>
+            <h3 className="font-pixel text-base sm:text-lg text-cream">{t.projects[i].title}</h3>
             <span className="font-pixel text-xs text-lavender">#{String(i + 1).padStart(2, '0')}</span>
           </div>
-          <p className="mt-1.5 text-sm leading-relaxed text-cream/80 text-pretty">{p.description}</p>
+          <p className="mt-1.5 text-sm leading-relaxed text-cream/80 text-pretty">{t.projects[i].description}</p>
           <ul className="mt-3 flex flex-wrap gap-1.5">
             {p.tags.map((tag) => (
               <li
@@ -184,7 +188,7 @@ export function ProjectContent() {
   )
 }
 
-export function ExperienceContent() {
+export function ExperienceContent({ lang = 'id' }: { lang?: Language }) {
   return (
     <ol className="relative ml-2 border-l-2 border-dashed border-gold/40 pl-6">
       {EXPERIENCE.map((e, i) => (
@@ -201,7 +205,7 @@ export function ExperienceContent() {
             <p className="text-sm text-lavender">{e.role}</p>
             {e.current && (
               <span className="mt-2 inline-block rounded-md bg-pink/15 px-2 py-0.5 font-pixel text-[11px] text-pink">
-                Current quest
+                {lang === 'id' ? 'Quest Saat Ini' : 'Current quest'}
               </span>
             )}
           </div>
@@ -211,7 +215,7 @@ export function ExperienceContent() {
   )
 }
 
-export function ContactContent() {
+export function ContactContent({ lang = 'id' }: { lang?: Language }) {
   const [sent, setSent] = useState(false)
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -261,11 +265,13 @@ export function ContactContent() {
       </ul>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <h3 className="font-pixel text-xs uppercase tracking-[0.3em] text-pink">Send a message</h3>
+        <h3 className="font-pixel text-xs uppercase tracking-[0.3em] text-pink">
+          {lang === 'id' ? 'Kirim Pesan' : 'Send a message'}
+        </h3>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="flex flex-col gap-1 text-sm text-lavender">
-            Name
-            <input name="name" required maxLength={80} autoComplete="name" placeholder="Your name" className={field} />
+            {lang === 'id' ? 'Nama' : 'Name'}
+            <input name="name" required maxLength={80} autoComplete="name" placeholder={lang === 'id' ? 'Nama kamu' : 'Your name'} className={field} />
           </label>
           <label className="flex flex-col gap-1 text-sm text-lavender">
             Email
@@ -273,17 +279,17 @@ export function ContactContent() {
           </label>
         </div>
         <label className="flex flex-col gap-1 text-sm text-lavender">
-          Message
-          <textarea name="message" required maxLength={2000} rows={4} placeholder="Tell me about your idea…" className={`${field} resize-none`} />
+          {lang === 'id' ? 'Pesan' : 'Message'}
+          <textarea name="message" required maxLength={2000} rows={4} placeholder={lang === 'id' ? 'Ceritakan tentang ide kamu…' : 'Tell me about your idea…'} className={`${field} resize-none`} />
         </label>
         <button type="submit" className="btn-pixel scanlines flex items-center justify-center gap-2 rounded-xl py-2.5">
           <Send className="size-4" aria-hidden="true" />
-          Send Message
+          {lang === 'id' ? 'Kirim Pesan' : 'Send Message'}
         </button>
         {sent && (
           <p className="flex items-center gap-1.5 text-sm text-gold" role="status">
             <AtSign className="size-4" aria-hidden="true" />
-            Your mail app should open with the message ready to send.
+            {lang === 'id' ? 'Aplikasi email kamu akan terbuka dengan pesan yang siap dikirim.' : 'Your mail app should open with the message ready to send.'}
           </p>
         )}
       </form>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { PROFILE, SPEECH, SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
+import { PROFILE, SPEECH, SECTIONS, TRANSLATIONS, type Language, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 
 const SLIDE = { type: 'spring', stiffness: 22, damping: 28, mass: 2.2 } as const
 const EDGE = 8
@@ -19,7 +19,6 @@ function useTypewriterWithAudio(text: string) {
   const [count, setCount] = useState(0)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
-  // Inisialisasi audio looping
   useEffect(() => {
     const audio = new Audio('/audio/text-blip.mp3')
     audio.volume = 0.3
@@ -38,14 +37,13 @@ function useTypewriterWithAudio(text: string) {
 
     if (audio && text.length > 0) {
       audio.currentTime = 0
-      audio.play().catch(() => {}) // Musik mulai jalan saat teks ngetik
+      audio.play().catch(() => {})
     }
 
     const id = window.setInterval(() => {
       setCount((c) => {
         if (c >= text.length) {
           window.clearInterval(id)
-          // Berhenti total pas teks selesai
           if (audio) {
             audio.pause()
             audio.currentTime = 0
@@ -77,6 +75,7 @@ export function AvatarGuide({
   onTourYes,
   onTourNo,
   isRoomTour = false,
+  lang = 'id', // 👈 Prop bahasa ditambahkan di sini (default 'id')
 }: {
   section: Section
   layout: DockLayout
@@ -86,6 +85,7 @@ export function AvatarGuide({
   onTourYes?: () => void
   onTourNo?: () => void
   isRoomTour?: boolean
+  lang?: Language // 👈 Tipe data bahasa
 }) {
   const isDay = theme === 'day'
 
@@ -93,15 +93,20 @@ export function AvatarGuide({
   const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
   const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
 
-  const promptText = "Are you ready to explore my room?"
-  const activeText = showTourPrompt ? promptText : SPEECH[section]
+  // 💡 Ambil teks terjemahan dinamis dari TRANSLATIONS berdasarkan lang yang aktif
+  const t = TRANSLATIONS[lang]
+  const promptText = t.room.tourPrompt
   
-  // Menggunakan typewriter yang sudah ada audionya
+  // Ambil speech dari file portfolio-data jika ada di kamus, fallback ke SPEECH default
+  const activeText = showTourPrompt 
+    ? promptText 
+    : (t.speech && t.speech[section] ? t.speech[section] : SPEECH[section])
+  
   const { shown, done } = useTypewriterWithAudio(activeText)
   
   const modalOpen = section !== 'home'
   const nextSection = SECTIONS[(SECTIONS.indexOf(section) + 1) % SECTIONS.length]
-
+  
   const avatarX = layout.centers[section]
   const bubbleWidth = Math.min(352, layout.viewportWidth * 0.86)
   const minLeft = -layout.dockLeft + EDGE
@@ -153,7 +158,6 @@ export function AvatarGuide({
 
   return (
     <>
-      {/* 🎈 Animasi Avatar Naik Balon Udara saat Room Tour Aktif */}
       <AnimatePresence>
         {isRoomTour && (
           <motion.div
@@ -224,21 +228,21 @@ export function AvatarGuide({
                     onClick={onTourYes}
                     className="flex-1 rounded-xl bg-pink py-1.5 font-pixel text-xs text-panel shadow-[0_2px_0_#b4637f] active:translate-y-0.5"
                   >
-                    Yes
+                    {t.room.tourYes}
                   </button>
                   <button
                     type="button"
                     onClick={onTourNo}
                     className="flex-1 rounded-xl border border-gold/40 py-1.5 font-pixel text-xs text-cream hover:bg-panel-2"
                   >
-                    No
+                    {t.room.tourNo}
                   </button>
                 </div>
               ) : (
                 <button
                   type="button"
                   onClick={onAdvance}
-                  aria-label={`Continue to ${SECTION_LABELS[nextSection]}`}
+                  aria-label={`Continue to ${t.sections[nextSection as keyof typeof t.sections] || SECTION_LABELS[nextSection]}`}
                   className="absolute inset-0 size-full cursor-pointer opacity-0"
                 />
               )}
@@ -249,7 +253,7 @@ export function AvatarGuide({
                   className="absolute bottom-1.5 right-3 flex items-center gap-1.5 font-pixel text-[11px] text-pink/80 transition-colors group-hover:text-pink pointer-events-none"
                 >
                   <span className="opacity-0 transition-opacity group-hover:opacity-100">
-                    {`Next: ${SECTION_LABELS[nextSection]}`}
+                    {`Next: ${t.sections[nextSection as keyof typeof t.sections] || SECTION_LABELS[nextSection]}`}
                   </span>
                   <motion.span animate={{ y: [0, 3, 0] }} transition={{ repeat: Infinity, duration: 1 }}>
                     {'▼'}
