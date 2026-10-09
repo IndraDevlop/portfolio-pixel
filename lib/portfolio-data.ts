@@ -163,14 +163,14 @@ export const TRANSLATIONS = {
       contact: 'Kontak',
     },
     meta: {
-      about: { eyebrow: 'Profil Pemain', title: 'Tentang Saya' },
+      about: { eyebrow: 'Profil Data', title: 'Tentang Saya' },
       toolbox: { eyebrow: 'Inventaris', title: 'Alat yang saya gunakan' },
       project: { eyebrow: 'Catatan Quest', title: 'Projek yang saya buat' },
       experience: { eyebrow: 'Perjalanan', title: 'Pengalaman Saya' },
       contact: { eyebrow: 'Kirim Pesan', title: "Ayo Ngobrol" },
     },
     speech: {
-      home: "Halo! Selamat datang di kamar virtual Indra… Santai aja — Aku yang bakal jadi pemandumu hari ini. Klik titik yang menyala atau pakai menu di bawah ya.",
+      home: "Nahh! ini ruang istirahatku, silahkan duduk dan santai aja — Aku yang bakal jadi pemandumu hari ini. Klik titik yang menyala atau pakai menu di bawah ya.",
       about: "Itu komputer andalanku! Di sinilah aku menulis sedikit tentang siapa aku dan apa yang suka kubangun.",
       toolbox: 'Meja kerjaku ini tempat keajaiban terjadi. Ini adalah alat-alat yang kugunakan setiap hari.',
       project: 'Rak buku ini menyimpan karya favoritku. Setiap projek mengajarkanku sesuatu yang baru!',
@@ -225,14 +225,14 @@ export const TRANSLATIONS = {
       contact: 'Contact',
     },
     meta: {
-      about: { eyebrow: 'Player Profile', title: 'About Me' },
+      about: { eyebrow: 'Data Profile', title: 'About Me' },
       toolbox: { eyebrow: 'Inventory', title: 'The tools I use' },
       project: { eyebrow: 'Quest Log', title: 'The project I created' },
       experience: { eyebrow: 'Journey', title: 'My Experience' },
       contact: { eyebrow: 'Send a Raven', title: "Let's Talk" },
     },
     speech: {
-      home: "Hello! Welcome to Indra's virtual room… Make yourself cozy — I'll be your guide today. Click a glowing dot or use the dock below.",
+      home: "Nahh! This is my break room, please have a seat and just relax… Make yourself cozy — I'll be your guide today. Click a glowing dot or use the dock below.",
       about: "That's my trusty computer! Here's a little about who I am and what I love building.",
       toolbox: 'My desk is where the magic happens. These are the tools I reach for every day.',
       project: 'The bookshelf holds my favourite builds. Each one taught me something new!',

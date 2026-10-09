@@ -258,8 +258,8 @@ export function PortfolioApp() {
                     transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
                     className="relative rounded-2xl border-2 border-gold/80 bg-panel/95 px-3 py-2.5 text-left shadow-[0_0_20px_rgba(246,199,90,0.2)] backdrop-blur-sm"
                   >
-                    <div className="absolute -top-[10px] left-3 h-4 w-4 rotate-45 border-t-2 border-l-2 border-gold/80 bg-panel/95" />
-                    <span className="absolute -top-3 left-8 rounded-md bg-gold px-2 py-0.5 font-pixel text-[10px] font-semibold text-panel">
+                    <div className="absolute -top-[10px] left-16 h-4 w-4 rotate-45 border-t-2 border-l-2 border-gold/80 bg-panel/95" />
+                    <span className="absolute -top-3 left-7 rounded-md bg-gold px-2 py-0.5 font-pixel text-[10px] font-semibold text-panel">
                       Hint
                     </span>
                     <p className="font-pixel text-[10px] leading-relaxed text-cream mt-1">

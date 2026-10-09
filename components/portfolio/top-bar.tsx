@@ -25,7 +25,6 @@ export function SystemControls({
   const isNight = theme === 'night'
 
   return (
-    // 💡 Jarak antar tombol diperkecil di mobile (gap-1)
     <div className="flex items-center gap-1.5 sm:gap-2">
       {/* Tombol Bahasa */}
       <button
@@ -98,21 +97,21 @@ export function TopBar({
   const tour = SECTIONS.filter((s) => s !== 'home')
   
   return (
-    // 💡 Padding dan Gap diperkecil di mobile
     <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-1 sm:gap-3 p-2 sm:p-4">
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2 rounded-xl bg-panel/70 px-3 py-1.5 backdrop-blur-sm border border-gold/20">
+      {/* 💡 Perbaikan di sini: Tambahkan shrink-0 dan rapikan gap flex */}
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center justify-center rounded-xl bg-panel/70 px-2.5 py-1.5 backdrop-blur-sm border border-gold/20 shrink-0">
             <img 
               src="/logo-d.png" 
               alt="Logo" 
-              className="size-7 object-contain pixelated" 
+              className="size-6 sm:size-7 w-auto object-contain pixelated" 
               draggable={false}
             />
           </div>
         <button
           type="button"
           onClick={onDoorClick}
-          className="flex items-center gap-2 rounded-xl focus-visible:outline-2 focus-visible:outline-gold"
+          className="flex items-center justify-center rounded-xl focus-visible:outline-2 focus-visible:outline-gold shrink-0"
           aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
         >
           <span className={iconBtn}>
@@ -124,25 +123,23 @@ export function TopBar({
           </span>
         </button>
       </div>
-      
 
-      {/* 💡 Progress bar tengah dibikin lebih ringkas di mobile */}
+      {/* Progress bar tengah */}
       <motion.div
         animate={{ y: isRoomTour ? -60 : 0, opacity: isRoomTour ? 0 : 1 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
-        className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-2.5 py-1.5 sm:px-3 sm:py-2 backdrop-blur-sm ${
+        className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-2 py-1 sm:px-3 sm:py-2 backdrop-blur-sm overflow-hidden ${
           isRoomTour ? 'max-md:hidden pointer-events-none' : ''
         }`}
       >
-        <span className="min-w-12 sm:min-w-16 text-center font-pixel text-[9px] sm:text-xs uppercase tracking-widest text-cream">
+        <span className="min-w-10 sm:min-w-16 text-center font-pixel text-[8px] sm:text-xs uppercase tracking-widest text-cream truncate">
           {section === 'home' ? 'Intro' : SECTION_LABELS[section]}
         </span>
-        <div className="flex gap-1" aria-hidden="true">
+        <div className="hidden sm:flex gap-1" aria-hidden="true">
           {tour.map((s) => (
             <span
               key={s}
-              // 💡 Ukuran titik progress dipendekkan di mobile (w-3)
-             className={`h-1.5 w-[18px] sm:h-2 sm:w-5 rounded-[2px] transition-colors ${
+              className={`h-1.5 sm:h-2 w-4 sm:w-5 rounded-[2px] transition-colors ${
                 s === section ? 'bg-pink' : visited.has(s) ? 'bg-gold' : 'bg-panel-2'
               }`}
             />
@@ -150,7 +147,7 @@ export function TopBar({
         </div>
       </motion.div>
 
-      <div>{controls}</div>
+      <div className="shrink-0">{controls}</div>
     </header>
   )
 }
