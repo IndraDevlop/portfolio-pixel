@@ -73,10 +73,13 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           <Image
             src="/images/room-night.png"
             alt="Cozy pixel-art bedroom at night"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
             fill
             priority
             sizes="100vw"
-            className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-100' : 'opacity-0'}`}
+            className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-100' : 'opacity-0'} pointer-events-none select-none`}
+            style={{ WebkitTouchCallout: 'none' }}
           />
           {/* Background Utama Day */}
           <Image

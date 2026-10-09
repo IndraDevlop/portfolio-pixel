@@ -125,13 +125,15 @@ export function Dock({
           onMouseLeave={stopContinuousScroll}
           onTouchStart={() => startContinuousScroll(onPrev, isFirstSection)}
           onTouchEnd={stopContinuousScroll}
+          onContextMenu={(e) => e.preventDefault()} 
           disabled={isFirstSection}
           aria-label="Previous section"
-          className={`flex size-10 items-center justify-center rounded-xl transition-all ${
+          className={`flex size-10 items-center justify-center rounded-xl transition-all touch-none select-none ${
             isFirstSection
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}
+          style={{ WebkitTouchCallout: 'none' }}
         >
           <ChevronLeft className="size-5" aria-hidden="true" />
         </button>
@@ -178,13 +180,15 @@ export function Dock({
           onMouseLeave={stopContinuousScroll}
           onTouchStart={() => startContinuousScroll(onNext, isLastSection)}
           onTouchEnd={stopContinuousScroll}
+          onContextMenu={(e) => e.preventDefault()}
           disabled={isLastSection}
           aria-label="Next section"
-          className={`flex size-10 items-center justify-center rounded-xl transition-all ${
+          className={`flex size-10 items-center justify-center rounded-xl transition-all touch-none select-none ${
             isLastSection
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}
+          style={{ WebkitTouchCallout: 'none' }}
         >
           <ChevronRight className="size-5" aria-hidden="true" />
         </button>
