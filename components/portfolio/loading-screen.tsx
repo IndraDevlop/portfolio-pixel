@@ -129,8 +129,8 @@ export function LoadingScreen({
         </motion.div>
         
         <p className="font-pixel text-xs uppercase tracking-[0.4em] text-pink">{t.subtitle}</p>
-        <h1 className="mt-3 font-pixel text-3xl font-bold uppercase tracking-wide text-gold text-glow-gold text-balance sm:text-6xl">
-          {TRANSLATIONS[lang].room.title}
+        <h1 className="mt-3 font-pixel text-3xl font-bold uppercase tracking-wide text-gold text-glow-gold text-balance sm:text-5xl">
+          {TRANSLATIONS[lang].loading.page}
         </h1>
 
         <div

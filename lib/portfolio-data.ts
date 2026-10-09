@@ -76,7 +76,6 @@ export const POSTERS: Poster[] = [
 
 export const PROFILE = {
   name: 'Indrawansyah',
-  role: 'Full-Stack Developer',
   location: 'Indonesia',
   bio: "I'm a full-stack developer who loves turning messy business processes into clean, delightful web apps. From HR platforms to interactive flipbooks, I care about fast interfaces, solid data models and code my teammates enjoy working in.",
   stats: [
@@ -141,13 +140,14 @@ export const CONTACT = {
 export const TRANSLATIONS = {
   id: {
     loading: {
-      subtitle: 'Sebuah petualangan portofolio',
+      subtitle: 'Ruang Santai & Portofolio',
+      page: 'Selamat Datang',
       messages: ['Beresin kamar dulu…','Sambungin kabel Hp…','Seduh kopi hangat…','Rapihkan tempat tidur…','nyalakan lampu…'],
       ready: 'Ayo kita mulai!',
       start: 'Mulai'
     },
     room: {
-      title: 'Kamar Indra',
+      title: 'Halo',
       tourHint: 'Klo mau menjelajah kamar ku bisa klik tombol ini ya. 👆',
       tourSpeech: 'Santai aja keliling kamarku! Klik titik bercahaya buat liat projectku ya.',
       tourPrompt: 'Mau ikut tur kamar otomatis?',
@@ -202,13 +202,14 @@ export const TRANSLATIONS = {
   },
   en: {
     loading: {
-      subtitle: 'A cozy portfolio adventure',
+      subtitle: 'Chill Room & Portfolio',
+      page: 'Welcome',
       messages: ['Tidy up the room first…','Plug in the phone charger…','Brew a hot coffee…','Make the bed…','Turn on the lights…'],
       ready: 'Let`s get started!',
       start: 'Press Start'
     },
     room: {
-      title: "Indra's Room",
+      title: "Hello",
       tourHint: 'Want to explore my room? Just click this button! 👆',
       tourSpeech: 'Feel free to look around my room! Click on any glowing dot to explore my projects.',
       tourPrompt: 'Want an automatic room tour?',

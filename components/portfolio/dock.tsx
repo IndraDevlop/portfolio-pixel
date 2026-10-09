@@ -6,7 +6,6 @@ import { BookOpen, Briefcase, ChevronLeft, ChevronRight, House, Mail, Monitor, W
 import { SECTIONS, SECTION_LABELS, type Section, type Theme, type Language, TRANSLATIONS } from '@/lib/portfolio-data'
 import { AvatarGuide, type DockLayout } from './avatar-guide'
 
-
 const ICONS: Record<Section, LucideIcon> = {
   home: House,
   about: Monitor,
@@ -72,6 +71,29 @@ export function Dock({
   const { navRef, buttonRefs, layout } = useDockLayout()
   const t = TRANSLATIONS[lang]
 
+  // 💡 Ref untuk menyimpan interval hold-to-scroll
+  const scrollIntervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  const startContinuousScroll = (action: () => void, isDisabled: boolean) => {
+    if (isDisabled) return
+    action() // Eksekusi langkah pertama seketika saat ditekan
+    
+    // Mulai perulangan otomatis saat tombol ditahan (hold)
+    scrollIntervalRef.current = setInterval(() => {
+      action()
+    }, 200) // Kecepatan geser otomatis (dalam milidetik)
+  }
+
+  const stopContinuousScroll = () => {
+    if (scrollIntervalRef.current) {
+      clearInterval(scrollIntervalRef.current)
+      scrollIntervalRef.current = null
+    }
+  }
+
+  const isFirstSection = SECTIONS.indexOf(section) === 0
+  const isLastSection = SECTIONS.indexOf(section) === SECTIONS.length - 1
+
   return (
     <motion.nav
       ref={navRef}
@@ -85,7 +107,7 @@ export function Dock({
       {layout && <AvatarGuide
         section={section}
         layout={layout}
-        theme={theme} // <-- Oper juga theme-nya ke AvatarGuide di sini
+        theme={theme}
         onAdvance={onNext}
         showTourPrompt={showTourPrompt}
         onTourYes={onTourYes}
@@ -94,14 +116,19 @@ export function Dock({
       />}
 
       <div className="relative flex items-center gap-1 rounded-2xl border-2 border-gold/40 bg-panel/90 p-1.5 shadow-[0_10px_40px_rgba(5,3,20,0.6)] backdrop-blur-md">
-        {/* Tombol Panah Kiri (Paling Kiri) */}
+        {/* Tombol Panah Kiri (Hold-to-scroll support) */}
         <button
           type="button"
           onClick={onPrev}
-          disabled={SECTIONS.indexOf(section) === 0}
+          onMouseDown={() => startContinuousScroll(onPrev, isFirstSection)}
+          onMouseUp={stopContinuousScroll}
+          onMouseLeave={stopContinuousScroll}
+          onTouchStart={() => startContinuousScroll(onPrev, isFirstSection)}
+          onTouchEnd={stopContinuousScroll}
+          disabled={isFirstSection}
           aria-label="Previous section"
           className={`flex size-10 items-center justify-center rounded-xl transition-all ${
-            SECTIONS.indexOf(section) === 0
+            isFirstSection
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}
@@ -142,14 +169,19 @@ export function Dock({
           })}
         </ul>
 
-        {/* Tombol Panah Kanan (Paling Kanan) */}
+        {/* Tombol Panah Kanan (Hold-to-scroll support) */}
         <button
           type="button"
           onClick={onNext}
-          disabled={SECTIONS.indexOf(section) === SECTIONS.length - 1}
+          onMouseDown={() => startContinuousScroll(onNext, isLastSection)}
+          onMouseUp={stopContinuousScroll}
+          onMouseLeave={stopContinuousScroll}
+          onTouchStart={() => startContinuousScroll(onNext, isLastSection)}
+          onTouchEnd={stopContinuousScroll}
+          disabled={isLastSection}
           aria-label="Next section"
           className={`flex size-10 items-center justify-center rounded-xl transition-all ${
-            SECTIONS.indexOf(section) === SECTIONS.length - 1
+            isLastSection
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}

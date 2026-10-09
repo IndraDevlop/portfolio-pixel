@@ -39,7 +39,7 @@ export function MainMenu({
           {t.room.title}
         </h1>
         <p className="mx-auto mt-4 max-w-sm leading-relaxed text-cream/85 text-pretty">
-          {PROFILE.role} · {lang === 'id' ? 'Portofolio Interaktif. Tur terpandu melintasi profil, alat, dan karya favoritku.' : 'Interactive Portfolio. A guided tour through my profile, toolbox and favourite builds.'}
+          {lang === 'id' ? 'Selamat datang di ruang santaiku, tempat aku rebahan, cari inspirasi, dan tidur. Maaf ya aku ga nyediain kopi soalnya belum stok lagi hehe' : 'Welcome to my chill space, where I relax, find inspiration, and sleep. Sorry, I don’t have coffee available at the moment, I haven’t restocked yet hehe.'}
         </p>
         <button
           type="button"
@@ -47,7 +47,7 @@ export function MainMenu({
           className="btn-pixel scanlines mt-7 flex w-full items-center justify-center gap-3 rounded-2xl py-3.5 text-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold"
         >
           <Play className="size-5 fill-current" aria-hidden="true" />
-          {lang === 'id' ? 'Mulai Menjelajah' : 'Start Exploring'}
+          {lang === 'id' ? 'Ayo masuk' : 'Come on in'}
         </button>
         <p className="mt-3 font-pixel text-xs text-lavender">
           {lang === 'id' ? 'Tekan' : 'Press'}{' '}

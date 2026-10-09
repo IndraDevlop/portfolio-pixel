@@ -141,7 +141,7 @@ export function AvatarGuide({
       setIsBubbleVisible(false)
     }, 6000) 
     return () => clearTimeout(idleTimer)
-  }, [section, showTourPrompt])
+  }, [section, showTourPrompt, lang])
 
   useEffect(() => {
     if (section !== prevSectionRef.current) {
