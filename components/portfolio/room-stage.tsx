@@ -25,6 +25,22 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [panX, setPanX] = useState(0)
   const [panY, setPanY] = useState(0)
   
+  const panIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const startContinuousPan = (dx: number, dy: number) => {
+    handlePan(dx, dy) // Geser sekali pas pertama disentuh
+    
+    // Mulai pergeseran otomatis
+    if (panIntervalRef.current) clearInterval(panIntervalRef.current)
+    panIntervalRef.current = setInterval(() => {
+      handlePan(dx, dy)
+    }, 100) // 100ms adalah kecepatan geser, perkecil kalau mau lebih ngebut
+  }
+  const stopContinuousPan = () => {
+    if (panIntervalRef.current) {
+      clearInterval(panIntervalRef.current)
+      panIntervalRef.current = null
+    }
+  }
   // State interaktif
   const [isWindowOpen, setIsWindowOpen] = useState(false)
   const [isDeskLampOn, setIsDeskLampOn] = useState(true)   // Lampu meja komputer (default nyala)
@@ -273,7 +289,11 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               <div className="translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
-                  onClick={() => handlePan(0, 35)}
+                  onPointerDown={(e) => { e.preventDefault(); startContinuousPan(0, 35) }}
+                  onPointerUp={stopContinuousPan}
+                  onPointerLeave={stopContinuousPan}
+                  onPointerCancel={stopContinuousPan}
+                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
                   className="h-15 w-12 rounded-t-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
                   style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 67%, 67% 100%, 33% 100%, 0% 67%)' }}
                   aria-label="Pan Up"
@@ -287,7 +307,11 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               <div className="translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
-                  onClick={() => handlePan(55, 0)}
+                  onPointerDown={(e) => { e.preventDefault(); startContinuousPan(55, 0) }}
+                  onPointerUp={stopContinuousPan}
+                  onPointerLeave={stopContinuousPan}
+                  onPointerCancel={stopContinuousPan}
+                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
                   className="h-12 w-15 rounded-l-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
                   style={{ clipPath: 'polygon(0% 0%, 67% 0%, 100% 33%, 100% 67%, 67% 100%, 0% 100%)' }}
                   aria-label="Pan Left"
@@ -304,7 +328,11 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               <div className="-translate-x-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
-                  onClick={() => handlePan(-55, 0)}
+                  onPointerDown={(e) => { e.preventDefault(); startContinuousPan(-55, 0) }}
+                  onPointerUp={stopContinuousPan}
+                  onPointerLeave={stopContinuousPan}
+                  onPointerCancel={stopContinuousPan}
+                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
                   className="h-12 w-15 rounded-r-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
                   style={{ clipPath: 'polygon(100% 0%, 100% 100%, 33% 100%, 0% 67%, 0% 33%, 33% 0%)' }}
                   aria-label="Pan Right"
@@ -318,7 +346,11 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               <div className="-translate-y-3.5 drop-shadow-[0_3px_2px_rgba(0,0,0,0.8)]">
                 <button
                   type="button"
-                  onClick={() => handlePan(0, -35)}
+                  onPointerDown={(e) => { e.preventDefault(); startContinuousPan(0, -35) }}
+                  onPointerUp={stopContinuousPan}
+                  onPointerLeave={stopContinuousPan}
+                  onPointerCancel={stopContinuousPan}
+                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
                   className="h-15 w-12 rounded-b-md bg-gradient-to-b from-[#3e344d] via-[#2a2336] to-[#181320] transition-all active:brightness-125 active:scale-95"
                   style={{ clipPath: 'polygon(0% 100%, 100% 100%, 100% 33%, 67% 0%, 33% 0%, 0% 33%)' }}
                   aria-label="Pan Down"

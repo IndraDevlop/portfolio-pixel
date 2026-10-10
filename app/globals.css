@@ -160,3 +160,21 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+body {
+  -webkit-touch-callout: none !important; /* Blokir popup "Save Image" di iOS */
+  -webkit-user-select: none !important;   /* Blokir seleksi teks biru */
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important; /* Hilangkan kedip kotak saat tombol ditap */
+}
+
+/* Pastikan semua gambar tidak bisa di-drag atau memancing popup */
+img {
+  -webkit-user-drag: none !important;
+  pointer-events: none; /* Bikin gambar tembus pandang dari sentuhan */
+}
+
+/* KECUALI tombol/ikon yang memang harus bisa diklik */
+button, a, button img, a img {
+  pointer-events: auto;
+}
