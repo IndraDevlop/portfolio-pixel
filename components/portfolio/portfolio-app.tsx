@@ -13,6 +13,60 @@ import { ContentModal } from './content-modal'
 
 type Scene = 'loading' | 'menu' | 'room'
 
+// 💡 Hook Typewriter + Suara (Spesifik buat Tour Speech biar berbunyi dan ngetik)
+function useTypewriterWithAudio(text: string, active: boolean) {
+  const [shown, setShown] = useState('')
+  const [done, setDone] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    const audio = new Audio('/audio/text-blip.mp3')
+    audio.volume = 0.3
+    audio.loop = true
+    audioRef.current = audio
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }, [])
+
+  useEffect(() => {
+    setShown('')
+    setDone(false)
+    if (!active || !text) return
+
+    let count = 0
+    const audio = audioRef.current
+    if (audio) {
+      audio.currentTime = 0
+      audio.play().catch(() => {})
+    }
+
+    const id = setInterval(() => {
+      count++
+      setShown(text.slice(0, count))
+      if (count >= text.length) {
+        clearInterval(id)
+        setDone(true)
+        if (audio) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+      }
+    }, 35) // 💡 Kecepatan ngetik
+
+    return () => {
+      clearInterval(id)
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+    }
+  }, [text, active])
+
+  return { shown, done }
+}
+
 export function PortfolioApp() {
   const [isMounted, setIsMounted] = useState(false)
   const [scene, setScene] = useState<Scene>('loading')
@@ -25,13 +79,63 @@ export function PortfolioApp() {
   
   const [isRoomTour, setIsRoomTour] = useState(false)
   const [showTourPrompt, setShowTourPrompt] = useState(false)
-  const [tourSpeechReady, setTourSpeechReady] = useState(false)
   
+  // 💡 State baru untuk dialog beruntun
+  const [tourSpeechReady, setTourSpeechReady] = useState(false)
+  const [speechIndex, setSpeechIndex] = useState(0) 
+  const [specialSpeech, setSpecialSpeech] = useState<string | null>(null)
   const [showContactTourHint, setShowContactTourHint] = useState(false)
 
   const bgmRef = useRef<HTMLAudioElement | null>(null)
+  useEffect(() => {
+    if (isRoomTour && theme === 'day') {
+      setSpecialSpeech(TRANSLATIONS[lang].room.tourDayTransition)
+      setTourSpeechReady(false) // Sembunyikan dialog saat ini (jika ada) biar animasinya ke-reset
+    }
+  }, [theme, isRoomTour, lang])
+  useEffect(() => {
+    if (!isRoomTour) {
+      setTourSpeechReady(false)
+      setSpeechIndex(0)
+      setSpecialSpeech(null) // Reset semuanya kalau keluar room tour
+      return
+    }
 
-  // 1. Semua pemanggilan Hooks / useEffect ditaruh di atas tanpa terhalang kondisi apapun
+    let showTimer: NodeJS.Timeout
+    let hideTimer: NodeJS.Timeout
+
+    const playSpeech = () => {
+      setTourSpeechReady(true)
+      
+      hideTimer = setTimeout(() => {
+        setTourSpeechReady(false)
+        
+        if (specialSpeech) {
+          // Kalau habis nampilin dialog spesial, hapus status spesialnya
+          // (Ini akan memicu useEffect berjalan ulang dan kembali ke loop normal)
+          setSpecialSpeech(null)
+        } else {
+          // Kalau dialog normal, lanjut ke urutan berikutnya setelah 10 detik
+          setSpeechIndex((prev) => prev + 1)
+          showTimer = setTimeout(playSpeech, 10000)
+        }
+      }, 12000) // Durasi dialog tampil (12 detik)
+    }
+
+    if (specialSpeech) {
+      // Kalau ada dialog spesial, munculin secepatnya (delay cuma 500ms)
+      showTimer = setTimeout(playSpeech, 500)
+    } else {
+      // Kalau masuk normal (atau abis dialog spesial selesai), delay 2 detik baru ngomong
+      showTimer = setTimeout(playSpeech, 2000)
+    }
+
+    return () => {
+      clearTimeout(showTimer)
+      clearTimeout(hideTimer)
+    }
+  }, [isRoomTour, specialSpeech])
+
   useEffect(() => {
     setIsMounted(true)
     const bgm = new Audio('/audio/bg-room.mp3')
@@ -72,22 +176,38 @@ export function PortfolioApp() {
     }
   }, [section, isRoomTour])
 
+  // 💡 Logika Looping Dialog 
   useEffect(() => {
-    if (isRoomTour) {
-      const showTimer = setTimeout(() => {
-        setTourSpeechReady(true)
-      }, 1200)
-
-      const hideTimer = setTimeout(() => {
-        setTourSpeechReady(false)
-      }, 6200)
-
-      return () => {
-        clearTimeout(showTimer)
-        clearTimeout(hideTimer)
-      }
-    } else {
+    if (!isRoomTour) {
       setTourSpeechReady(false)
+      setSpeechIndex(0) // Reset ke awal kalau keluar tour
+      return
+    }
+
+    let showTimer: NodeJS.Timeout
+    let hideTimer: NodeJS.Timeout
+
+    const cycleSpeech = () => {
+      setTourSpeechReady(true)
+      
+      // Berapa lama dialognya muncul (8 detik)
+      hideTimer = setTimeout(() => {
+        setTourSpeechReady(false)
+        
+        // Pindah ke dialog selanjutnya
+        setSpeechIndex((prev) => prev + 1)
+        
+        // Jeda waktu sebelum dialog berikutnya muncul (10 detik)
+        showTimer = setTimeout(cycleSpeech, 10000) 
+      }, 8000)
+    }
+
+    // Munculkan dialog pertama setelah delay 2 detik masuk room
+    showTimer = setTimeout(cycleSpeech, 2000)
+
+    return () => {
+      clearTimeout(showTimer)
+      clearTimeout(hideTimer)
     }
   }, [isRoomTour])
   
@@ -179,8 +299,15 @@ export function PortfolioApp() {
   )
 
   const tRoom = TRANSLATIONS[lang].room
+  
+  // 💡 Ambil dialog berdasarkan index array (otomatis ngulang dari 0 kalau udah mentok)
+  // Fallback pakai array buatan kalau `tourSpeeches` blm kebaca
+  const speeches = tRoom.tourSpeeches || [tRoom.tourSpeech] 
+  const currentSpeechText = specialSpeech || speeches[speechIndex % speeches.length]
 
-  // 2. Pengecekan isMounted ditaruh di PALING BAWAH setelah seluruh Hooks selesai dipanggil
+  // 💡 Aktifkan hook typewriter
+  const { shown, done } = useTypewriterWithAudio(currentSpeechText, tourSpeechReady)
+
   if (!isMounted) {
     return null
   }
@@ -293,6 +420,7 @@ export function PortfolioApp() {
                       />
                     </div>
                   </motion.div>
+                  
                   <AnimatePresence>
                     {tourSpeechReady && (
                       <motion.div
@@ -305,12 +433,16 @@ export function PortfolioApp() {
                         <span className="absolute -top-3 left-4 rounded-md bg-gold px-2 py-0.5 font-pixel text-[10px] font-semibold text-panel">
                           Indra
                         </span>
-                        <p className="font-pixel text-[11px] leading-relaxed text-cream mt-0.5">
-                          {tRoom.tourSpeech}
-                        </p>
+                        
+                        {/* 💡 Rendering text pakai {shown} dari hook Typewriter */}
+                        <span aria-hidden="true" className="block min-h-[3rem] font-pixel text-[11px] leading-relaxed text-cream mt-0.5">
+                          {shown}
+                          {!done && <span className="ml-0.5 inline-block h-3 w-1.5 translate-y-0.5 animate-pulse bg-gold" />}
+                        </span>
                       </motion.div>
                     )}
                   </AnimatePresence>
+
                 </motion.div>
               )}
             </AnimatePresence>

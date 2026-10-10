@@ -150,6 +150,14 @@ export const TRANSLATIONS = {
       title: 'Halo',
       tourHint: 'Klo mau menjelajah kamar ku bisa klik tombol ini ya. 👆',
       tourSpeech: 'Santai aja keliling kamarku! Klik titik bercahaya buat liat projectku ya.',
+      tourSpeeches: [
+        'Selamat datang di markasku! Santai aja, keliling-keliling sesukamu ya.',
+        'Di komputer itu biasanya aku ngoding dan bikin project seru sampai pagi.',
+        'Kalau kamu klik tombol hotspot yang nyala, kamu bisa lihat detailnya lho.',
+        'Oh iya, lampu tidur dan jendela itu bisa diklik juga buat interaksi.',
+        'Banyak rahasia di kamar ini. Coba jelajahi semuanya pelan-pelan!'
+      ],
+      tourDayTransition: 'Duh aku ga sempet ganti pakaian nih soalnya lagi terbang di balon, nanti aja pas selesai room tournya ya hehe 😅',
       tourPrompt: 'Mau ikut tur kamar otomatis?',
       tourYes: 'Boleh',
       tourNo: 'Nanti aja'
@@ -212,6 +220,14 @@ export const TRANSLATIONS = {
       title: "Hello",
       tourHint: 'Want to explore my room? Just click this button! 👆',
       tourSpeech: 'Feel free to look around my room! Click on any glowing dot to explore my projects.',
+      tourSpeeches: [
+        'Welcome to my base! Take your time and explore around.',
+        'That PC is where I usually code and build cool projects all night.',
+        'If you click the glowing hotspots, you can see more details.',
+        'Oh, you can also click the desk lamp and window to interact with them.',
+        'There are a few secrets here. Try exploring everything slowly!'
+      ],
+      tourDayTransition: "Oops, I didn't get to change clothes because I'm flying on this balloon. Maybe after the tour! hehe 😅",
       tourPrompt: 'Want an automatic room tour?',
       tourYes: 'Sure',
       tourNo: 'Later'
