@@ -178,7 +178,7 @@ export const TRANSLATIONS = {
       contact: { eyebrow: 'Kirim Pesan', title: "Ayo Ngobrol" },
     },
     speech: {
-      home: "Nahh! ini ruang istirahatku, silahkan duduk dan santai aja — Aku yang bakal jadi pemandumu hari ini. Klik titik yang menyala atau pakai menu di bawah ya.",
+      home: "Nahh! ini ruang istirahatku, silahkan duduk dan santai aja — Aku yang bakal jadi pemandumu hari ini. Pada navigasi atas ada beberapa yang bisa kamu gunakan, sebelah kiri ada mode room tour dan di sebelah kanan ada mode siang dan malam, ganti bahasa dan matikan suara.",
       about: "Itu komputer andalanku! Di sinilah aku menulis sedikit tentang siapa aku dan apa yang suka kubangun.",
       toolbox: 'Meja kerjaku ini tempat keajaiban terjadi. Ini adalah alat-alat yang kugunakan setiap hari.',
       project: 'Rak buku ini menyimpan karya favoritku. Setiap projek mengajarkanku sesuatu yang baru!',
@@ -186,7 +186,7 @@ export const TRANSLATIONS = {
       contact: 'Mau bangun sesuatu bareng? Kirim pesan aja — Aku balas cepat kok!',
     },
     profile: {
-      bio: "Aku adalah full-stack developer yang suka mengubah proses bisnis yang berantakan jadi aplikasi web yang rapi dan asik dipakai. Mulai dari platform HR sampai flipbook interaktif, aku peduli dengan antarmuka yang cepat, struktur data yang solid, dan kode yang bikin timku nyaman kerjanya.",
+      bio: "Saya seorang full-stack developer yang memiliki minat dan dedikasi tinggi dalam dunia pengembangan web, saya suka mengubah proses bisnis yang berantakan jadi aplikasi web yang rapi dan asik dipakai. Saya menguasai bahasa pemrograman seperti HTML, JavaScript, dan CSS, serta terbiasa menggunakan berbagai framework dan pustaka (library) untuk membangun aplikasi yang responsif dan efisien. Walaupun saya sudah terbiasa dengan pengembangan web, saya selalu bersemangat untuk belajar hal baru dan mengikuti perkembangan teknologi terbaru. Saya percaya bahwa pengembangan web adalah bidang yang terus berkembang apalagi dengan adanya infrastruktur AI yang bisa memudahkan pengembangan web jadi lebih efisien dalam pembuatan dan menemukan bugs, dan saya ingin terus meningkatkan keterampilan saya agar dapat memberikan solusi terbaik bagi pengguna dan klien.",
       stats: [
         { label: 'Tahun Pengalaman', value: '4+' },
         { label: 'Perusahaan', value: '3' },
@@ -248,7 +248,7 @@ export const TRANSLATIONS = {
       contact: { eyebrow: 'Send a Raven', title: "Let's Talk" },
     },
     speech: {
-      home: "Nahh! This is my break room, please have a seat and just relax… Make yourself cozy — I'll be your guide today. Click a glowing dot or use the dock below.",
+      home: "Nahh! This is my break room, please have a seat and just relax… Make yourself cozy — I'll be your guide today. You can use several options in the top navigation bar. On the left is the room tour mode, and on the right are the day/night mode, language switcher, and sound toggle.",
       about: "That's my trusty computer! Here's a little about who I am and what I love building.",
       toolbox: 'My desk is where the magic happens. These are the tools I reach for every day.',
       project: 'The bookshelf holds my favourite builds. Each one taught me something new!',
@@ -256,7 +256,7 @@ export const TRANSLATIONS = {
       contact: 'Want to build something together? Drop me a message — I reply fast!',
     },
     profile: {
-      bio: "I'm a full-stack developer who loves turning messy business processes into clean, delightful web apps. From HR platforms to interactive flipbooks, I care about fast interfaces, solid data models and code my teammates enjoy working in.",
+      bio: "I am a full-stack developer with a strong passion and dedication to web development. I enjoy transforming disorganized business processes into clean, secure, and functional web applications. I am proficient in languages ​​such as HTML, JavaScript, and CSS, and experienced in using various frameworks and libraries to build responsive, efficient applications. While I am well-versed in web development, I am always eager to learn new things and keep up with the latest technological advancements. I believe web development is a constantly evolving field especially with the advent of AI infrastructure that streamlines development and bug detection, and I am committed to continuously honing my skills to deliver the best solutions for users and clients.",
       stats: [
         { label: 'Years XP', value: '4+' },
         { label: 'Companies', value: '3' },

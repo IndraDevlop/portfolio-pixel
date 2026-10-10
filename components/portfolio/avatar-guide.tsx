@@ -139,7 +139,7 @@ export function AvatarGuide({
     setIsBubbleVisible(true)
     const idleTimer = setTimeout(() => {
       setIsBubbleVisible(false)
-    }, 6000) 
+    }, 14000) 
     return () => clearTimeout(idleTimer)
   }, [section, showTourPrompt, lang])
 

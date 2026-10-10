@@ -39,7 +39,9 @@ export function AboutContent({ lang = 'id' }: { lang?: Language }) {
           </p>
         </div>
       </div>
-      <p className="leading-relaxed text-cream/85 text-pretty">{t.profile.bio}</p>
+      <p className="leading-relaxed text-cream/85 text-pretty text-justify hyphens-auto">
+        {t.profile.bio}
+      </p>
 
       <dl className="grid grid-cols-3 gap-2">
         {t.profile.stats.map((s, i) => (
@@ -59,7 +61,7 @@ export function AboutContent({ lang = 'id' }: { lang?: Language }) {
 
       <div>
         <h3 className="mb-3 font-pixel text-xs uppercase tracking-[0.3em] text-pink">
-          {lang === 'id' ? 'Atribut Pemain' : 'Player Stats'}
+          {lang === 'id' ? 'Keahlian' : 'Skills'}
         </h3>
         <ul className="flex flex-col gap-3">
           {PROFILE.attributes.map((a, i) => (
