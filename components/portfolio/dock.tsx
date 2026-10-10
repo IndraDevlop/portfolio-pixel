@@ -119,13 +119,18 @@ export function Dock({
         {/* Tombol Panah Kiri (Hold-to-scroll support) */}
         <button
           type="button"
-          onClick={onPrev}
-          onMouseDown={() => startContinuousScroll(onPrev, isFirstSection)}
-          onMouseUp={stopContinuousScroll}
-          onMouseLeave={stopContinuousScroll}
-          onTouchStart={() => startContinuousScroll(onPrev, isFirstSection)}
-          onTouchEnd={stopContinuousScroll}
-          onContextMenu={(e) => e.preventDefault()} 
+          onPointerDown={(e) => {
+            // Biar browser ga mikir kita mau nge-drag/block teks
+            e.preventDefault() 
+            startContinuousScroll(onPrev, isFirstSection)
+          }}
+          onPointerUp={stopContinuousScroll}
+          onPointerLeave={stopContinuousScroll}
+          onPointerCancel={stopContinuousScroll} // 💡 Jaga-jaga kalau layar tiba-tiba scroll
+          onContextMenu={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
           disabled={isFirstSection}
           aria-label="Previous section"
           className={`flex size-10 items-center justify-center rounded-xl transition-all touch-none select-none ${
@@ -133,7 +138,11 @@ export function Dock({
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}
-          style={{ WebkitTouchCallout: 'none' }}
+          style={{ 
+            WebkitTouchCallout: 'none',
+            WebkitUserSelect: 'none',
+            userSelect: 'none'
+          }}
         >
           <ChevronLeft className="size-5" aria-hidden="true" />
         </button>
@@ -174,13 +183,17 @@ export function Dock({
         {/* Tombol Panah Kanan (Hold-to-scroll support) */}
         <button
           type="button"
-          onClick={onNext}
-          onMouseDown={() => startContinuousScroll(onNext, isLastSection)}
-          onMouseUp={stopContinuousScroll}
-          onMouseLeave={stopContinuousScroll}
-          onTouchStart={() => startContinuousScroll(onNext, isLastSection)}
-          onTouchEnd={stopContinuousScroll}
-          onContextMenu={(e) => e.preventDefault()}
+          onPointerDown={(e) => {
+            e.preventDefault()
+            startContinuousScroll(onNext, isLastSection)
+          }}
+          onPointerUp={stopContinuousScroll}
+          onPointerLeave={stopContinuousScroll}
+          onPointerCancel={stopContinuousScroll} // 💡 Jaga-jaga kalau layar tiba-tiba scroll
+          onContextMenu={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
           disabled={isLastSection}
           aria-label="Next section"
           className={`flex size-10 items-center justify-center rounded-xl transition-all touch-none select-none ${
@@ -188,7 +201,11 @@ export function Dock({
               ? 'opacity-45 cursor-not-allowed bg-transparent text-lavender/45 shadow-none'
               : 'bg-pink text-panel shadow-[0_3px_0_#b4637f] active:translate-y-0.5'
           }`}
-          style={{ WebkitTouchCallout: 'none' }}
+          style={{ 
+            WebkitTouchCallout: 'none',
+            WebkitUserSelect: 'none',
+            userSelect: 'none'
+           }}
         >
           <ChevronRight className="size-5" aria-hidden="true" />
         </button>
