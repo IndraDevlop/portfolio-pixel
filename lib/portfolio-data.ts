@@ -69,9 +69,9 @@ export type Poster = {
 
 /** Swap `src` to change the wall posters — they are not baked into the background. */
 export const POSTERS: Poster[] = [
-  { id: 'galaxy', src: '/images/poster-galaxy.png', alt: 'Pixel art galaxy poster', left: 3, top: 24, width: 6.5, aspect: '2 / 3', tilt: -2 },
+  { id: 'galaxy', src: '/images/poster-galaxy.png', alt: 'Pixel art galaxy poster', left: 3, top: 24, width: 8.5, aspect: '4 / 3', tilt: -2 },
   { id: 'game', src: '/images/poster-game.png', alt: 'Pixel art game controller poster', left: 20, top: 11.5, width: 4.5, aspect: '1 / 1', tilt: 3 },
-  { id: 'city', src: '/images/poster-city.png', alt: 'Pixel art synthwave city poster', left: 91, top: 17, width: 6.5, aspect: '2 / 3', tilt: 2 },
+  { id: 'city', src: '/images/poster-city.png', alt: 'Pixel art synthwave city poster', left: 91, top: 17, width: 8.5, aspect: '4 / 3', tilt: 2 },
 ]
 
 export const PROFILE = {
