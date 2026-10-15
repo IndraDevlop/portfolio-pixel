@@ -1,7 +1,8 @@
 'use client'
 
-import { motion } from 'framer-motion'
-import { DoorOpen, LogOut, Volume2, VolumeX } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { DoorOpen, LogOut, Volume2, VolumeX, X } from 'lucide-react'
 import { SECTIONS, SECTION_LABELS, type Section, type Theme } from '@/lib/portfolio-data'
 
 const iconBtn =
@@ -96,58 +97,117 @@ export function TopBar({
 }) {
   const tour = SECTIONS.filter((s) => s !== 'home')
   
+  // 💡 State baru untuk mengontrol popup logo
+  const [isLogoModalOpen, setIsLogoModalOpen] = useState(false)
+  
   return (
-    <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-1 sm:gap-3 p-2 sm:p-4">
-      {/* 💡 Perbaikan di sini: Tambahkan shrink-0 dan rapikan gap flex */}
-      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-        <div className="flex items-center justify-center rounded-xl bg-panel/70 px-2.5 py-1.5 backdrop-blur-sm border border-gold/20 shrink-0">
+    <>
+      <header className="pointer-events-auto absolute inset-x-0 top-0 z-30 flex items-center justify-between gap-1 sm:gap-3 p-2 sm:p-4">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* 💡 Logo dibungkus button agar bisa diklik dan memunculkan popup */}
+          <button
+            type="button"
+            onClick={() => setIsLogoModalOpen(true)}
+            className="group relative flex items-center justify-center rounded-xl bg-panel/70 px-2.5 py-1.5 backdrop-blur-sm border border-gold/20 hover:border-gold/60 transition-all shrink-0 cursor-pointer active:scale-95"
+            aria-label="View My Logo"
+          >
             <img 
-              src="/logo-d.png" 
-              alt="Logo" 
+              src="/logo-d.gif" 
+              alt="My Logo" 
               className="size-6 sm:size-7 w-auto object-contain pixelated" 
               draggable={false}
             />
-          </div>
-        <button
-          type="button"
-          onClick={onDoorClick}
-          className="flex items-center justify-center rounded-xl focus-visible:outline-2 focus-visible:outline-gold shrink-0"
-          aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
-        >
-          <span className={iconBtn}>
-            {isRoomTour ? (
-              <LogOut className="size-[16px] sm:size-[18px] text-pink" aria-hidden="true" />
-            ) : (
-              <DoorOpen className="size-[16px] sm:size-[18px]" aria-hidden="true" />
-            )}
-          </span>
-        </button>
-      </div>
+            {/* Tooltip kecil saat di-hover */}
+            <span className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-gold/40 bg-panel px-1.5 py-0.5 font-pixel text-[10px] text-gold opacity-0 shadow-md transition-opacity group-hover:opacity-100 z-40">
+              My Logo
+            </span>
+          </button>
 
-      {/* Progress bar tengah */}
-      <motion.div
-        animate={{ y: isRoomTour ? -60 : 0, opacity: isRoomTour ? 0 : 1 }}
-        transition={{ duration: 0.4, ease: 'easeInOut' }}
-        className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-2 py-1 sm:px-3 sm:py-2 backdrop-blur-sm overflow-hidden ${
-          isRoomTour ? 'max-md:hidden pointer-events-none' : ''
-        }`}
-      >
-        <span className="min-w-10 sm:min-w-16 text-center font-pixel text-[8px] sm:text-xs uppercase tracking-widest text-cream truncate">
-          {section === 'home' ? 'Intro' : SECTION_LABELS[section]}
-        </span>
-        <div className="hidden sm:flex gap-1" aria-hidden="true">
-          {tour.map((s) => (
-            <span
-              key={s}
-              className={`h-1.5 sm:h-2 w-4 sm:w-5 rounded-[2px] transition-colors ${
-                s === section ? 'bg-pink' : visited.has(s) ? 'bg-gold' : 'bg-panel-2'
-              }`}
-            />
-          ))}
+          <button
+            type="button"
+            onClick={onDoorClick}
+            className="flex items-center justify-center rounded-xl focus-visible:outline-2 focus-visible:outline-gold shrink-0"
+            aria-label={isRoomTour ? "Exit room tour" : "Start room tour"}
+          >
+            <span className={iconBtn}>
+              {isRoomTour ? (
+                <LogOut className="size-[16px] sm:size-[18px] text-pink" aria-hidden="true" />
+              ) : (
+                <DoorOpen className="size-[16px] sm:size-[18px]" aria-hidden="true" />
+              )}
+            </span>
+          </button>
         </div>
-      </motion.div>
 
-      <div className="shrink-0">{controls}</div>
-    </header>
+        {/* Progress bar tengah */}
+        <motion.div
+          animate={{ y: isRoomTour ? -60 : 0, opacity: isRoomTour ? 0 : 1 }}
+          transition={{ duration: 0.4, ease: 'easeInOut' }}
+          className={`flex items-center gap-2 rounded-xl border border-gold/20 bg-panel/80 px-2 py-1 sm:px-3 sm:py-2 backdrop-blur-sm overflow-hidden ${
+            isRoomTour ? 'max-md:hidden pointer-events-none' : ''
+          }`}
+        >
+          <span className="min-w-10 sm:min-w-16 text-center font-pixel text-[8px] sm:text-xs uppercase tracking-widest text-cream truncate">
+            {section === 'home' ? 'Intro' : SECTION_LABELS[section]}
+          </span>
+          <div className="hidden sm:flex gap-1" aria-hidden="true">
+            {tour.map((s) => (
+              <span
+                key={s}
+                className={`h-1.5 sm:h-2 w-4 sm:w-5 rounded-[2px] transition-colors ${
+                  s === section ? 'bg-pink' : visited.has(s) ? 'bg-gold' : 'bg-panel-2'
+                }`}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+        <div className="shrink-0">{controls}</div>
+      </header>
+
+      {/* 💡 Modal / Popup Preview Logo */}
+      <AnimatePresence>
+        {isLogoModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm pointer-events-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", duration: 0.4, bounce: 0.2 }}
+              className="relative w-full max-w-xs rounded-2xl border-2 border-gold/80 bg-panel p-6 shadow-[0_0_50px_rgba(246,199,90,0.25)] text-center flex flex-col items-center"
+            >
+              {/* Tombol Close */}
+              <button
+                type="button"
+                onClick={() => setIsLogoModalOpen(false)}
+                className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-lg border border-gold/30 bg-panel-2 text-cream hover:bg-gold hover:text-panel transition-colors"
+                aria-label="Close modal"
+              >
+                <X className="size-4" />
+              </button>
+
+              {/* Label Header */}
+              <span className="mb-4 rounded-md bg-gold px-3 py-1 font-pixel text-xs font-semibold text-panel uppercase tracking-wider">
+                Animated Logo Preview
+              </span>
+
+              {/* Kotak Preview Gambar/GIF Logo */}
+              <div className="my-4 flex size-32 items-center justify-center rounded-xl border border-gold/25 bg-[#110d18] p-4 shadow-inner">
+                <img
+                  src="/logo-d.gif"
+                  alt="My Logo Enlarged"
+                  className="max-h-full max-w-full object-contain pixelated drop-shadow-[0_4px_12px_rgba(246,199,90,0.3)]"
+                  draggable={false}
+                />
+              </div>
+
+              <p className="font-pixel text-xs text-cream/70 mt-1">
+                {lang === 'id' ? 'Logo saya ✨' : 'My Logo ✨'}
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

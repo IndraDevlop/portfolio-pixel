@@ -75,7 +75,7 @@ export function AvatarGuide({
   onTourYes,
   onTourNo,
   isRoomTour = false,
-  lang = 'id', // 👈 Prop bahasa ditambahkan di sini (default 'id')
+  lang = 'id',
 }: {
   section: Section
   layout: DockLayout
@@ -85,19 +85,19 @@ export function AvatarGuide({
   onTourYes?: () => void
   onTourNo?: () => void
   isRoomTour?: boolean
-  lang?: Language // 👈 Tipe data bahasa
+  lang?: Language
 }) {
   const isDay = theme === 'day'
 
   const walkAvatarSrc = isDay ? '/images/avatar-walk-day.gif' : '/images/avatar-walk.gif'
   const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
+  // 💡 Definisikan source untuk gif rebahan bosan/ngantuk (sementara pakai satu file dulu atau sesuaikan kalau nanti ada versi day)
+  const boredAvatarSrc = '/images/avatar-bored.gif' 
   const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
 
-  // 💡 Ambil teks terjemahan dinamis dari TRANSLATIONS berdasarkan lang yang aktif
   const t = TRANSLATIONS[lang]
   const promptText = t.room.tourPrompt
   
-  // Ambil speech dari file portfolio-data jika ada di kamus, fallback ke SPEECH default
   const activeText = showTourPrompt 
     ? promptText 
     : (t.speech && t.speech[section] ? t.speech[section] : SPEECH[section])
@@ -118,17 +118,34 @@ export function AvatarGuide({
   const [isWalking, setIsWalking] = useState(false)
   const [facingLeft, setFacingLeft] = useState(false)
   const [isTired, setIsTired] = useState(false)
+  const [isBored, setIsBored] = useState(false) // 💡 State baru untuk status rebahan/bosan
   
   const prevSectionRef = useRef(section)
   const prevXRef = useRef(avatarX)
 
+  // 💡 Logika AFK bertahap (Tired -> Bored)
   useEffect(() => {
     if (showTourPrompt) return 
+    
+    // Reset status waktu interaksi berubah / pindah section
     setIsTired(false)
-    const afkTimer = setTimeout(() => {
+    setIsBored(false)
+
+    // Timer pertama (60 detik): Berubah jadi tired (jongkok)
+    const tiredTimer = setTimeout(() => {
       setIsTired(true)
     }, 60000)
-    return () => clearTimeout(afkTimer)
+
+    // Timer kedua (120 detik / 2 menit total): Berubah jadi bored (rebahan miring)
+    const boredTimer = setTimeout(() => {
+      setIsTired(false)
+      setIsBored(true)
+    }, 120000)
+
+    return () => {
+      clearTimeout(tiredTimer)
+      clearTimeout(boredTimer)
+    }
   }, [section, showTourPrompt])
 
   useEffect(() => {
@@ -296,6 +313,14 @@ export function AvatarGuide({
                 src={walkAvatarSrc}
                 alt="Indra walking"
                 className="pixelated block h-full w-auto max-w-none object-contain"
+                draggable={false}
+              />
+            ) : isBored ? (
+              /* 💡 Khusus avatar bored diturunkan posisinya pakai translate-y tanpa ganggu yang lain */
+              <img
+                src={boredAvatarSrc}
+                alt="Indra bored/lying down"
+                className="pixelated block h-full w-auto max-w-none object-contain translate-y-[2.2rem]"
                 draggable={false}
               />
             ) : isTired ? (
