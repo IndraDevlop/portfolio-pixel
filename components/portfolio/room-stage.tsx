@@ -78,7 +78,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
     >
       <div 
         ref={stageContainerRef}
-        className="absolute left-1/2 top-1/2 min-h-[115dvh] aspect-video w-[max(100vw,177.78dvh)] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+        className="absolute left-1/2 top-1/2 h-[100vh] aspect-video w-[177.78vh] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
       >
         <motion.div 
           className="absolute inset-0"

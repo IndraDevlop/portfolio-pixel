@@ -92,7 +92,7 @@ export function AvatarGuide({
   const walkAvatarSrc = isDay ? '/images/avatar-walk-day.gif' : '/images/avatar-walk.gif'
   const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
   // 💡 Definisikan source untuk gif rebahan bosan/ngantuk (sementara pakai satu file dulu atau sesuaikan kalau nanti ada versi day)
-  const boredAvatarSrc = isDay ? '/images/avatar-bored-day.png' : '/images/avatar-bored.gif' 
+  const boredAvatarSrc = isDay ? '/images/avatar-bored-day.gif' : '/images/avatar-bored.gif' 
   const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
 
   const t = TRANSLATIONS[lang]
@@ -316,11 +316,15 @@ export function AvatarGuide({
                 draggable={false}
               />
             ) : isBored ? (
-              /* 💡 Khusus avatar bored diturunkan posisinya pakai translate-y tanpa ganggu yang lain */
+              /* 💡 Kita pisah ukurannya berdasarkan isDay (siang vs malam) */
               <img
                 src={boredAvatarSrc}
                 alt="Indra bored/lying down"
-                className="pixelated block h-full w-auto max-w-none object-contain translate-y-[2.2rem]"
+                className={`pixelated block object-contain translate-y-[2.2rem] ${
+                  isDay 
+                    ? 'h-[105%] w-auto max-w-none -translate-x-2' // <-- Atur ukuran khusus siang di sini (bisa diubah angkanya)
+                    : 'h-full w-auto max-w-none'                // Ukuran malam tetap normal
+                }`}
                 draggable={false}
               />
             ) : isTired ? (
