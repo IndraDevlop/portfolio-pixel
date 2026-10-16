@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HOTSPOTS, POSTERS, type Section, type Theme } from '@/lib/portfolio-data'
+import { HOTSPOTS, POSTERS, OVERLAYS,  type Section, type Theme } from '@/lib/portfolio-data'
 import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react'
 
 type Props = {
@@ -87,7 +87,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
         >
           {/* Background Utama Night */}
           <Image
-            src="/images/room-night.png"
+            src="/images/room-night.png" 
             alt="Cozy pixel-art bedroom at night"
             draggable={false}
             onContextMenu={(e) => e.preventDefault()}
@@ -107,28 +107,116 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-0' : 'opacity-100'}`}
           />
 
-          {/* 1. Overlay Jendela Terbuka */}
           <AnimatePresence>
-            {isWindowOpen && (
+            {!isNight && !isWindowOpen && (
               <motion.div
-                key="open-window"
+                key="day-window-closed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+                className="group absolute z-10 drop-shadow-none"
+                style={{ 
+                  left: `${OVERLAYS.window.left}%`, 
+                  top: `${OVERLAYS.window.top}%`, 
+                  width: `${OVERLAYS.window.width}%` 
+                }}
+              >
+                <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-[1.01]">
+                  <img
+                    src="/images/day-window.png" // Path gambar jendela tertutup siang lu (sesuaikan namanya)
+                    alt="Closed Day Window"
+                    className="pixelated block h-auto w-full"
+                    draggable={false}
+                  />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" 
+                      style={{ boxShadow: 'inset 0 0 20px rgba(255, 255, 255, 0.1)' }} 
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* 2. JENDELA TERBUKA - SIANG */}
+            {!isNight && isWindowOpen && (
+              <motion.div
+                key="day-window-open"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
-                className="absolute inset-0 pointer-events-none z-10 translate-x-[8px] translate-y-[8px]"
+                className="absolute z-10 pointer-events-none"
+                style={{ 
+                  left: `${OVERLAYS.window.left}%`, 
+                  top: `${OVERLAYS.window.top}%`, 
+                  width: `${OVERLAYS.window.width}%` 
+                }}
               >
-                <Image
-                  src="/images/jendela.PNG"
-                  alt="Open Window Overlay"
-                  fill
-                  sizes="100vw"
-                  className={`pixelated object-cover transition-all duration-1000 ${
-                    isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
-                  }`}
-                  style={{ transform: 'scaleX(0.97)', transformOrigin: 'center' }}
+                <img
+                  src="/images/day-window-open.png" // Path gambar jendela terbuka siang lu
+                  alt="Open Day Window"
+                  className="pixelated w-full h-auto block"
                   draggable={false}
                 />
+              </motion.div>
+            )}
+            {/* 2. JENDELA TERBUKA - MALAM */}
+            {isNight && isWindowOpen && (
+              <motion.div
+                key="night-window-open"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="absolute z-10 pointer-events-none"
+                style={{ 
+                  left: `${OVERLAYS.windowNight.left}%`, 
+                  top: `${OVERLAYS.windowNight.top}%`, 
+                  width: `${OVERLAYS.windowNight.width}%` 
+                }}
+              >
+                <img
+                  src="/images/night-window-open.png" // Path khusus gambar jendela terbuka malam
+                  alt="Open Night Window"
+                  className="pixelated w-full h-auto block"
+                  style={{ 
+                    filter: 'brightness(1.0) saturate(1.0) contrast(1)', 
+                    WebkitFilter: 'brightness(0.99) saturate(1.0) contrast(1)',
+                  }}
+                  draggable={false}
+                />
+              </motion.div>
+            )}
+
+            {/* 3. JENDELA TERTUTUP - MALAM (Lengkap dengan efek hover poster) */}
+            {isNight && !isWindowOpen && (
+              <motion.div
+                key="night-window-closed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+                className="group absolute z-10 drop-shadow-none"
+                style={{ 
+                  left: `${OVERLAYS.windowNight.left}%`, 
+                  top: `${OVERLAYS.windowNight.top}%`, 
+                  width: `${OVERLAYS.windowNight.width}%` 
+                }}
+              >
+                <div className="relative h-full w-full transition-transform duration-300 group-hover:scale-[1.01]">
+                  <img
+                    src="/images/night-window.png" // Path gambar jendela tertutup malam
+                    alt="Closed Night Window"
+                    className="pixelated block h-auto w-full"
+                    style={{ 
+                      filter: 'brightness(1.0) saturate(1.0) contrast(1)', 
+                      WebkitFilter: 'brightness(0.99) saturate(1.0) contrast(1)',
+                    }}
+                    draggable={false}
+                  />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100" 
+                      style={{ boxShadow: 'inset 0 0 20px rgba(255, 214, 130, 0.1)' }} 
+                  />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -142,14 +230,17 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="absolute inset-0 pointer-events-none z-11 translate-x-[37px] translate-y-[16px]"
+                className="absolute z-11 pointer-events-none"
+                style={{ 
+                  left: `${OVERLAYS.deskLamp.left}%`, 
+                  top: `${OVERLAYS.deskLamp.top}%`, 
+                  width: `${OVERLAYS.deskLamp.width}%` 
+                }}
               >
-                <Image
-                  src="/images/lampu-belajar.PNG"
+                <img
+                  src="/images/lampu-belajar-crop.PNG"
                   alt="Desk Lamp Off Overlay"
-                  fill
-                  sizes="100vw"
-                  className={`pixelated object-cover transition-all duration-1000 ${
+                  className={`pixelated w-full h-auto block transition-all duration-1000 ${
                     isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
                   }`}
                   draggable={false}
@@ -159,7 +250,7 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           </AnimatePresence>
 
           {/* 3. Overlay Lampu Tidur Kasur Mati */}
-          <AnimatePresence>
+         <AnimatePresence>
             {!isBedlampOn && (
               <motion.div
                 key="bed-lamp-off"
@@ -167,14 +258,17 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
-                className="absolute inset-0 pointer-events-none z-11"
+                className="absolute z-11 pointer-events-none"
+                style={{ 
+                  left: `${OVERLAYS.bedLamp.left}%`, 
+                  top: `${OVERLAYS.bedLamp.top}%`, 
+                  width: `${OVERLAYS.bedLamp.width}%` 
+                }}
               >
-                <Image
-                  src="/images/lampu-tidur.PNG"
+                <img
+                  src="/images/lampu-tidur-crop.PNG"
                   alt="Bed Lamp Off Overlay"
-                  fill
-                  sizes="100vw"
-                  className={`pixelated object-cover transition-all duration-1000 ${
+                  className={`pixelated w-full h-auto block transition-all duration-1000 ${
                     isNight ? 'brightness-[0.45] contrast-125 saturate-50' : 'brightness-100'
                   }`}
                   draggable={false}
@@ -182,16 +276,18 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
               </motion.div>
             )}
           </AnimatePresence>
+          
+          
 
           {/* Hotspot Area Klik Jendela */}
           <div
             onClick={() => {
-              if (isNight) return
+              // Malam sekarang dibolehkan buka/tutup jendela juga!
               setIsWindowOpen((prev) => !prev)
             }}
-            className={`absolute z-30 ${isNight ? 'cursor-default' : 'cursor-pointer'}`}
+            className="absolute z-30 cursor-pointer"
             style={{ top: '22%', left: '37%', width: '26%', height: '42%' }}
-            title={isNight ? "Jendela tidak bisa dibuka di malam hari" : "Klik untuk buka/tutup jendela"}
+            title="Klik untuk buka/tutup jendela"
           />
 
           {/* Hotspot Area Klik Lampu Meja Komputer */}

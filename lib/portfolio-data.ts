@@ -74,6 +74,13 @@ export const POSTERS: Poster[] = [
   { id: 'city', src: '/images/poster-city.png', alt: 'Pixel art synthwave city poster', left: 91, top: 17, width: 8.5, aspect: '4 / 3', tilt: 2 },
 ]
 
+export const OVERLAYS = {
+  window: { left: 33, top: 12, width: 33.5 }, // Sesuaikan angka ini nanti
+  deskLamp: { left: 5, top: 42, width: 12 },    // Sesuaikan angka ini nanti
+  bedLamp: { left: 88, top: 58, width: 7 },     // Sesuaikan angka ini nanti
+  windowNight: { left: 33, top: 12, width: 33.5 },
+}
+
 export const PROFILE = {
   name: 'Indrawansyah',
   location: 'Indonesia',

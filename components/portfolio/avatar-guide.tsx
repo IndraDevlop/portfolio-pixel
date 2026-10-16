@@ -92,7 +92,7 @@ export function AvatarGuide({
   const walkAvatarSrc = isDay ? '/images/avatar-walk-day.gif' : '/images/avatar-walk.gif'
   const tiredAvatarSrc = isDay ? '/images/avatar-tired-day.gif' : '/images/avatar-tired.gif'
   // 💡 Definisikan source untuk gif rebahan bosan/ngantuk (sementara pakai satu file dulu atau sesuaikan kalau nanti ada versi day)
-  const boredAvatarSrc = '/images/avatar-bored.gif' 
+  const boredAvatarSrc = isDay ? '/images/avatar-bored-day.png' : '/images/avatar-bored.gif' 
   const idleAvatarSrc = isDay ? '/images/avatar-day.png' : '/images/avatar.png'
 
   const t = TRANSLATIONS[lang]
