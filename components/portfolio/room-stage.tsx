@@ -45,7 +45,8 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
   const [isWindowOpen, setIsWindowOpen] = useState(false)
   const [isDeskLampOn, setIsDeskLampOn] = useState(true)   // Lampu meja komputer (default nyala)
   const [isBedlampOn, setIsBedlampOn] = useState(true)     // Lampu tidur kasur (default nyala)
-
+  const [selectedPoster, setSelectedPoster] = useState<typeof POSTERS[0] | null>(null)
+  const [isDropping, setIsDropping] = useState(false) // State buat efek bingkai jatuh pas close
   // Otomatis tutup jendela kalau ganti ke mode night
   useEffect(() => {
     if (isNight) {
@@ -277,8 +278,6 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             )}
           </AnimatePresence>
           
-          
-
           {/* Hotspot Area Klik Jendela */}
           <div
             onClick={() => {
@@ -318,7 +317,8 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           {POSTERS.map((p) => (
             <div
               key={p.id}
-              className="group absolute"
+              onClick={() => setSelectedPoster(p)} // 💡 Buka modal saat poster diklik
+              className="group absolute cursor-pointer"
               style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.width}%`, aspectRatio: p.aspect, rotate: `${p.tilt}deg` }}
             >
               <div className="h-full w-full rounded-[3px] border-[3px] border-[#5a3a24] bg-[#3a2516] p-[2px] shadow-[0_6px_14px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:rotate-0 group-hover:scale-105">
@@ -457,6 +457,74 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           </div>
         </div>
       )}
+      {/* Modal Popup Zoom-in & Efek Bingkai Jatuh */}
+      <AnimatePresence>
+        {selectedPoster && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+            {/* Backdrop / Klik luar buat tutup */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setIsDropping(true)
+                setTimeout(() => {
+                  setSelectedPoster(null)
+                  setIsDropping(false)
+                }, 500) // Durasi pas dengan animasi jatuh (0.5 detik)
+              }}
+              className="absolute inset-0"
+            />
+
+            {/* Kotak Bingkai Poster yang Di-zoom & Animasi Jatuh */}
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0, y: -50, rotate: 0 }}
+              animate={
+                isDropping 
+                  ? { y: '110vh', rotate: 25, opacity: 0, scale: 0.9 } // 💡 Efek bingkai jatuh ke bawah & miring
+                  : { scale: 1, opacity: 1, y: 0, rotate: 0 }          // Efek Zoom-in normal
+              }
+              exit={{ opacity: 0 }}
+              transition={
+                isDropping 
+                  ? { duration: 0.5, ease: 'easeIn' }                  // Kecepatan jatuh
+                  : { type: 'spring', damping: 25, stiffness: 300 }     // Efek membal (bouncing) pas zoom-in
+              }
+              className="relative z-10 max-w-2xl w-full rounded-xl border-4 border-[#5a3a24] bg-[#3a2516] p-3 shadow-[0_20px_50px_rgba(0,0,0,0.8)]"
+            >
+              {/* Tombol Close (X) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDropping(true)
+                  setTimeout(() => {
+                    setSelectedPoster(null)
+                    setIsDropping(false)
+                  }, 500)
+                }}
+                className="absolute -top-4 -right-4 size-9 rounded-full bg-pink border-2 border-gold font-pixel text-panel font-bold flex items-center justify-center shadow-lg hover:scale-110 transition-transform cursor-pointer"
+              >
+                ✕
+              </button>
+
+              {/* Gambar Poster Diperbesar */}
+              <div className="overflow-hidden rounded-lg bg-black/40">
+                <img
+                  src={selectedPoster.src}
+                  alt={selectedPoster.alt}
+                  className="pixelated w-full h-auto object-contain max-h-[75vh]"
+                  draggable={false}
+                />
+              </div>
+
+              {/* Keterangan Teks Poster (Opsional) */}
+              <div className="mt-3 text-center font-pixel text-cream text-sm">
+                {selectedPoster.alt}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
