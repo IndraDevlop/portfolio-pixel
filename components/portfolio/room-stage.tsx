@@ -81,23 +81,6 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
         ref={stageContainerRef}
         className="absolute left-1/2 top-1/2 h-[100vh] aspect-video w-[177.78vh] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
       >
-        {!isNight && (
-          <div
-            className="absolute z-20 pointer-events-none"
-            style={{ 
-              left: '14%', 
-              top: '19.3%', 
-              width: '17%' 
-            }}
-          >
-            <img
-              src="/images/wall-panel-day.png"
-              alt="Gundam and Retro Gaming Collection Display"
-              className="pixelated w-full h-auto block [filter:drop-shadow(0_1px_0px_rgba(30,18,10,0.85))_brightness(0.94)_contrast(1.05)]"
-              draggable={false}
-            />
-          </div>
-        )}
         <motion.div 
           className="absolute inset-0"
           animate={{ x: panX, y: panY }}
@@ -124,7 +107,23 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
             sizes="100vw"
             className={`pixelated object-cover transition-opacity duration-1000 ${isNight ? 'opacity-0' : 'opacity-100'}`}
           />
-
+          {!isNight && (
+            <div
+              className="absolute z-20 pointer-events-none"
+              style={{ 
+                left: `${OVERLAYS.collectibleShelf.left}%`, 
+                top: `${OVERLAYS.collectibleShelf.top}%`, 
+                width: `${OVERLAYS.collectibleShelf.width}%` 
+              }}
+            >
+              <img
+                src="/images/wall-panel-day.png"
+                alt="Gundam and Retro Gaming Collection Display"
+                className="pixelated w-full h-auto block [filter:drop-shadow(0_1px_0px_rgba(30,18,10,0.85))_brightness(0.94)_contrast(1.05)]"
+                draggable={false}
+              />
+            </div>
+          )}
           <AnimatePresence>
             {!isNight && !isWindowOpen && (
               <motion.div
@@ -331,22 +330,35 @@ export function RoomStage({ theme, blurred, interactive, active, onHotspot, isRo
           <NightLighting visible={isNight} />
           <DayLighting visible={!isNight} />
 
-          {POSTERS.map((p) => (
-            <div
-              key={p.id}
-              onClick={() => setSelectedPoster(p)} // 💡 Buka modal saat poster diklik
-              className="group absolute cursor-pointer"
-              style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.width}%`, aspectRatio: p.aspect, rotate: `${p.tilt}deg` }}
-            >
-              <div className="h-full w-full rounded-[3px] border-[3px] border-[#5a3a24] bg-[#3a2516] p-[2px] shadow-[0_6px_14px_rgba(0,0,0,0.45)] transition-transform duration-300 group-hover:rotate-0 group-hover:scale-105">
-                <img src={p.src} alt={p.alt} className="pixelated h-full w-full object-cover" draggable={false} />
-              </div>
+          {POSTERS.map((p) => {
+            const isClickable = p.id !== 'game' // 💡 Cek apakah ini bukan poster game
+
+            return (
               <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 transition-opacity duration-1000 ${isNight ? 'bg-[#1a1240]/35' : 'bg-transparent'}`}
-              />
-            </div>
-          ))}
+                key={p.id}
+                onClick={() => {
+                  if (isClickable) setSelectedPoster(p) // Cuma bisa diklik kalau isClickable true
+                }}
+                // 💡 Atur cursor dan group hover cuma buat yang bisa diklik
+                className={`absolute ${isClickable ? 'group cursor-pointer' : ''}`}
+                style={{ left: `${p.left}%`, top: `${p.top}%`, width: `${p.width}%`, aspectRatio: p.aspect, rotate: `${p.tilt}deg` }}
+              >
+                <div className={`h-full w-full rounded-[3px] border-[3px] border-[#5a3a24] bg-[#3a2516] p-[2px] shadow-[0_6px_14px_rgba(0,0,0,0.45)] transition-transform duration-300 ${isClickable ? 'group-hover:rotate-0 group-hover:scale-105' : ''}`}>
+                  <img 
+                    src={p.src} 
+                    alt={p.alt} 
+                    className="pixelated h-full w-full object-cover" 
+                    style={{ objectPosition: p.objectPosition || 'center' }} 
+                    draggable={false} 
+                  />
+                </div>
+                <div
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-0 transition-opacity duration-1000 ${isNight ? 'bg-[#1a1240]/35' : 'bg-transparent'}`}
+                />
+              </div>
+            )
+          })}
 
           <div
             aria-hidden="true"

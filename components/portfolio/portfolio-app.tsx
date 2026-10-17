@@ -124,7 +124,7 @@ export function PortfolioApp() {
 
     if (specialSpeech) {
       // Kalau ada dialog spesial, munculin secepatnya (delay cuma 500ms)
-      showTimer = setTimeout(playSpeech, 500)
+      showTimer = setTimeout(playSpeech, 5000)
     } else {
       // Kalau masuk normal (atau abis dialog spesial selesai), delay 2 detik baru ngomong
       showTimer = setTimeout(playSpeech, 2000)

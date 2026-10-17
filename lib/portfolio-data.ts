@@ -65,12 +65,13 @@ export type Poster = {
   width: number
   aspect: string
   tilt: number
+  objectPosition?: string
 }
 
 /** Swap `src` to change the wall posters — they are not baked into the background. */
 export const POSTERS: Poster[] = [
   { id: 'galaxy', src: '/images/poster-galaxy.png', alt: 'Sertificate SGBVA', left: 3, top: 24, width: 8.5, aspect: '4 / 3', tilt: -2 },
-  { id: 'game', src: '/images/poster-game.png', alt: 'wanted poster', left: 20, top: 11.5, width: 4.5, aspect: '1 / 1', tilt: 3 },
+  { id: 'game', src: '/images/poster-game.png', alt: 'wanted poster', left: 20, top: 11.5, width: 4.5, aspect: '1 / 1', tilt: 3, objectPosition: 'center 10%' },
   { id: 'city', src: '/images/poster-city.png', alt: 'Sertificate Hactiv8', left: 91, top: 17, width: 8.5, aspect: '4 / 3', tilt: 2 },
 ]
 
@@ -79,7 +80,7 @@ export const OVERLAYS = {
   deskLamp: { left: 5, top: 42, width: 12 }, 
   bedLamp: { left: 88, top: 58, width: 7 },  
   windowNight: { left: 33, top: 12, width: 33.5 },
-  collectibleShelf: { left: 41, top: 50.5, width: 14 },
+  collectibleShelf: { left: 14, top: 19.3, width: 17 },
 }
 
 export const PROFILE = {
@@ -159,10 +160,9 @@ export const TRANSLATIONS = {
       tourHint: 'Klo mau menjelajah kamar ku bisa klik tombol ini ya. 👆',
       tourSpeech: 'Santai aja keliling kamarku! Klik titik bercahaya buat liat projectku ya.',
       tourSpeeches: [
-        'Selamat datang di markasku! Santai aja, keliling-keliling sesukamu ya.',
-        'Di komputer itu biasanya aku ngoding dan bikin project seru sampai pagi.',
+        'Ayo aku temenin sambil santai, keliling-keliling sesukamu ya.',
+        'Kalo kamu gerah bisa buka aja jendelanya, tapi jangan lupa tutup lagi ya.',
         'Kalau kamu klik tombol hotspot yang nyala, kamu bisa lihat detailnya lho.',
-        'Oh iya, lampu tidur dan jendela itu bisa diklik juga buat interaksi.',
         'Banyak rahasia di kamar ini. Coba jelajahi semuanya pelan-pelan!'
       ],
       tourDayTransition: 'Duh aku ga sempet ganti pakaian nih soalnya lagi terbang di balon, nanti aja pas selesai room tournya ya hehe 😅',
